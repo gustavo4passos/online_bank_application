@@ -1,6 +1,7 @@
 # Import socket module 
 import socket
-  
+from enum import Enum
+
   
 def Main(): 
     # local host IP '127.0.0.1' 
@@ -21,8 +22,13 @@ def Main():
         if message == 'quit': 
             break
         allMessage += message+'/'
-        
-        if(message == 'd'):
+
+        if(message == 'l'):
+            message = input('Conta: ')
+            allMessage += message+'/'
+            message = input('Senha: ')
+            allMessage += message+'/'
+        elif(message == 'd'):
             message = input('Conta: ')
             allMessage += message+'/'
             message = input('Valor: ')
@@ -48,9 +54,22 @@ def Main():
         s.send(allMessage.encode('ascii'))
   
         # receive message from server 
-        data = s.recv(1024) 
-   
-        print('Received from the server :',str(data.decode('ascii'))) 
+        data = s.recv(1024)
+
+        answer = data.decode('ascii')
+        answer = answer.split('/')
+        if(answer[0] == "OK"):
+            print("Success")
+        elif(answer[0] == "BALANCE"):
+            print("Saldo = " + str(answer[2]))    
+        elif(answer[0] == "INVALID_ACCOUNT"):
+            print("Invalide acount, please create one")
+        elif(answer[0] == "INVALID_DESTINATION_ACCOUNT"):
+            print("Destination account doesn't exist")
+        elif(answer[0] == "INVALID_AMOUNT"):
+            print("Invalid amount")
+        elif(answer[0] == "BAD_REQUEST"):
+            print("BAD REQUEST")                
         
         
     # finish connection 
