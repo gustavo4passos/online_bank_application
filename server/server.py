@@ -2,7 +2,11 @@ import socket
 import threading
 import json
 
+from bank import Bank
+
 from _thread import *
+
+bank = Bank("database.json")
 
 def client_thread(connection):
 	while True:
