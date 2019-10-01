@@ -11,6 +11,7 @@ class ERROR_TYPE(Enum):
 	INVALID_ID = 3,
 	NOT_A_MANAGER = 4
 	NON_SUFFICIENT_FUNDS = 5
+	WRONG_PASSWORD = 6
 
 class Bank:
 	def __init__(self, database_file):
@@ -113,7 +114,25 @@ class Bank:
 				}	
 	
 	def login(self, account, password):
-		return
+		if account in self.database:
+			self.database_access_lock.acquire()
+			if self.database[account]["password"] == password:
+				self.database_access_lock.release()
+				return{
+					"status": ERROR_TYPE.NO_ERROR,
+					"data": "Accepted login"
+				}
+			else:
+				self.database_access_lock.release()
+				return{
+				"status": ERROR_TYPE.WRONG_PASSWORD,
+				"data": ""
+				}
+		else:
+			return{
+				"status": ERROR_TYPE.INVALID_ACCOUNT,
+				"data": ""
+				}	
 	
 	def create_account(self, id, name, manager_account):
 		return
