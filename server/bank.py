@@ -1,6 +1,8 @@
 import json
 import threading
-from enum import Enum
+
+from enum   import Enum
+from logger import Logger
 
 class ERROR_TYPE(Enum):
 	NO_ERROR = 0,
@@ -18,7 +20,7 @@ class Bank:
 
 		self.dump_db_lock = threading.Lock()
 		self.database_access_lock = threading.Lock()
-		print("Bank database has loaded")
+		Logger.log_info("Bank database has loaded.")
 	
 	def get_balance(self, account_number):
 		if account_number in self.database:
@@ -27,12 +29,13 @@ class Bank:
 				"status": ERROR_TYPE.NO_ERROR,
 				"data": self.database[account_number] }
 			self.database_access_lock.release()
+
 			return result
+
 		else:
 			return {
 				"status": ERROR_TYPE.INVALID_ACCOUNT,
-				"data": "" 
-				}
+				"data": "" }
 	
 	def withdraw(self, account_number, amount):
 		if account_number in self.database:

@@ -3,8 +3,10 @@ import threading
 import json
 
 from _thread import *
-from bank import Bank
+from bank    import Bank
+from logger  import Logger
 
+DATABASE_FILE_NAME = "database.json"
 global bank 
 
 def client_thread(connection, client_address):
@@ -13,12 +15,12 @@ def client_thread(connection, client_address):
 		if not data:
 			break
 
-	print("Client on " + str(client_address) + " disconnected.")
+	Logger.log_info("Client on " + str(client_address) + " disconnected.")
 	connection.close()
 
 def start_server():
-	bank = Bank("database.json")
-	hos = ""
+	bank = Bank(DATABASE_FILE_NAME)
+	host = ""
 	port = 7049
 
 	listening_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -28,9 +30,9 @@ def start_server():
 
 	while True:
 		client_socket, client_address = listening_socket.accept();	
-		print("New client accepted on: " + str(client_address))
-
+		Logger.log_info("New client accepted on: " + str(client_address))
 		start_new_thread(client_thread, (client_socket, client_address))
+
 	listening_socket.close();
 
 start_server()
