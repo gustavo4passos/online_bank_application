@@ -42,6 +42,7 @@ class Bank:
 		if account_number in self.database:
 			self.database_access_lock.acquire()
 			if self.database[account_number]["balance"] < amount:
+				self.database_access_lock.release()
 				return {
 				"status": ERROR_TYPE.NON_SUFFICIENT_FUNDS,
 				"data": ""
@@ -84,6 +85,7 @@ class Bank:
 		if origin_account and destination_account in self.database:
 			self.database_access_lock.acquire()
 			if self.database[origin_account]["balance"] < amount:
+				self.database_access_lock.release()
 				return {
 				"status": ERROR_TYPE.NON_SUFFICIENT_FUNDS,
 				"data": ""
