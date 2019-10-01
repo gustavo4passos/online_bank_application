@@ -14,6 +14,9 @@ Saque:
 	Login
 	l/conta/senha/\n\r
 
+	Criar conta
+	cc/rg/nome/n_conta_gerente/\n\r
+
 Servidor\Respostas
 
 	OK/\n\r
@@ -30,4 +33,8 @@ Servidor\Respostas
 
 	BAD_REQUEST/\n\r (Mensagem mal formada)
 
+	INVALID_ID/\n\r
 
+	INVALID_NAME/\n\r
+
+	NOT_A_MANAGER/\n\r
