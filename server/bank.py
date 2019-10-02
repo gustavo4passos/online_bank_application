@@ -10,6 +10,8 @@ class ERROR_TYPE(Enum):
 	INVALID_DESTINATION_ACCOUNT = 2,
 	INVALID_ID = 3,
 	NOT_A_MANAGER = 4
+	NON_SUFFICIENT_FUNDS = 5
+	WRONG_PASSWORD = 6
 
 class Bank:
 	def __init__(self, database_file):
@@ -40,6 +42,13 @@ class Bank:
 	def withdraw(self, account_number, amount):
 		if account_number in self.database:
 			self.database_access_lock.acquire()
+			if self.database[account_number]["balance"] < amount:
+				self.database_access_lock.release()
+				return {
+				"status": ERROR_TYPE.NON_SUFFICIENT_FUNDS,
+				"data": ""
+				}
+
 			self.database[account_number]["balance"] -= amount
 			self.update_database()
 			self.database_access_lock.release()
@@ -55,16 +64,77 @@ class Bank:
 				"data": ""
 			}
 
-	def deposit(self, destination_acount, amount):
-		return
+	def deposit(self, destination_account, amount):
+		if destination_account in self.database:
+			self.database_access_lock.acquire()
+			self.database[destination_account]["balance"] += amount
+			self.update_database()
+			self.database_access_lock.release()
+
+			return { 
+				"status": ERROR_TYPE.NO_ERROR,
+				"data": ""
+			}
+
+		else:
+			return {
+				"status": ERROR_TYPE.INVALID_ACCOUNT,
+				"data": ""
+			}	
 	
 	def transfer(self, origin_account, destination_account, amount):
-		return
+		if origin_account and destination_account in self.database:
+			self.database_access_lock.acquire()
+			if self.database[origin_account]["balance"] < amount:
+				self.database_access_lock.release()
+				return {
+				"status": ERROR_TYPE.NON_SUFFICIENT_FUNDS,
+				"data": ""
+				}
+
+			self.database[origin_account]["balance"] -= amount	
+			self.database[destination_account]["balance"] += amount
+			self.update_database()
+			self.database_access_lock.release()
+
+			return {
+				"status": ERROR_TYPE.NO_ERROR,
+				"data": ""
+			}
+		else:
+			if origin_account in self.database:
+				return{
+				"status": ERROR_TYPE.INVALID_DESTINATION_ACCOUNT,
+				"data": ""
+				}
+			else:
+				return{
+				"status": ERROR_TYPE.INVALID_ACCOUNT,
+				"data": ""
+				}	
 	
 	def login(self, account, password):
-		return
+		if account in self.database:
+			self.database_access_lock.acquire()
+			if self.database[account]["password"] == password:
+				self.database_access_lock.release()
+				return{
+					"status": ERROR_TYPE.NO_ERROR,
+					"data": "Accepted login"
+				}
+			else:
+				self.database_access_lock.release()
+				return{
+				"status": ERROR_TYPE.WRONG_PASSWORD,
+				"data": ""
+				}
+		else:
+			return{
+				"status": ERROR_TYPE.INVALID_ACCOUNT,
+				"data": ""
+				}	
 	
-	def create_acount(self, id, name, manager_account):
+	def create_account(self, id, name, manager_account):
 		return
 	
 	def update_database(self):
