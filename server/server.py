@@ -7,19 +7,20 @@ from bank    import Bank
 from logger  import Logger
 
 DATABASE_FILE_NAME = "database.json"
-global bank 
-
+bank = Bank(DATABASE_FILE_NAME)
+ 
 def client_thread(connection, client_address):
 	while True:
 		data = connection.recv(1024)
 		if not data:
 			break
+		
+		global bank
 
 	Logger.log_info("Client on " + str(client_address) + " disconnected.")
 	connection.close()
 
 def start_server():
-	bank = Bank(DATABASE_FILE_NAME)
 	host = ""
 	port = 7049
 
