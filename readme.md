@@ -32,7 +32,8 @@ interface balance {
 
 interface create_account {
     op: string; // c
-    account: string; 
+	account: string; 
+	id: string; // RG
     token: string;
     name: string;
     password: string;
@@ -84,6 +85,11 @@ interface bad_request {
     error_message?: string; // Necessario?
 }
 
+interface invalid_id {
+    type: string; // "invalid_id"
+    error_message?: string;
+}
+
 interface invalid_account {
     type:string; // invalid_account
     account: string;
@@ -101,7 +107,6 @@ interface invalid_amount {
     error_message?: string; // valor negativo? não é numero?
 }
 
-// Responses (cont.)
 interface non_sufficient_funds {
     type: string // "non_sufficient_funds"
     error_message?: string;
