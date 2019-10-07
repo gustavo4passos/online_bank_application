@@ -33,6 +33,7 @@ interface balance {
 interface create_account {
     op: string; // c
     account: string; // conta que esta tentando executar a operacao
+    id: string; // RG
     token: string;
     name: string;
     password: string;
