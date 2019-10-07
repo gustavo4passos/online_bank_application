@@ -1,4 +1,6 @@
-# REQUESTS
+# PROTOCOL
+
+### REQUESTS
 
 ```typescript
 interface withdraw {
@@ -48,11 +50,16 @@ interface get_client_info {
 }
 ```
 
-# RESPONSES
+### RESPONSES
 
 ```typescript
 interface bad_request {
     type: string; // "bad_request";
+};
+
+interface ok {
+    type: string; // "ok"
+    message?: string;
 };
 
 interface login_success {

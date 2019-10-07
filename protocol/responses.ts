@@ -2,6 +2,11 @@ interface bad_request {
     type: string; // "bad_request";
 };
 
+interface ok {
+    type: string; // "ok"
+    message?: string;
+};
+
 interface login_success {
     type: string; // "login_success"
     name: string; // client name
