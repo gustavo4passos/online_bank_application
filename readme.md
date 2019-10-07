@@ -62,6 +62,11 @@ interface login_success {
     token: string;
 };
 
+interface login_fail {
+    type: string; // login_fail
+    error_message?: string;
+}
+
 interface balance {
     type: string; // "balance"
     balance: number;   
@@ -104,5 +109,10 @@ interface account_info {
     type: string; // "account_info"
     name: string; 
     account: number;
+}
+
+interface invalid_token {
+    type: string; // "invalid_token"
+    error_message?: string;
 }
 ```
