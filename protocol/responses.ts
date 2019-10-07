@@ -1,5 +1,6 @@
 interface bad_request {
     type: string; // "bad_request";
+    error_message?: string;
 };
 
 interface ok {
@@ -24,20 +25,18 @@ interface balance {
     balance: number;   
 };
 
-interface bad_request {
-    type: string; // "bad_request"
-    error_message?: string; // Necessario?
+interface invalid_id {
+    type: string; // "invalid_id"
+    error_message?: string;
 }
 
 interface invalid_account {
     type:string; // invalid_account
-    account: string;
     error_message?: string;
 }
 
 interface invalid_name {
     type: string; // "invalid_name"
-    name: string; // Nome tem numero, pontuacao, etc. Necessário?
     error_message?: string;
 }
 
@@ -47,7 +46,7 @@ interface invalid_amount {
 }
 
 interface non_sufficient_funds {
-    type: string // "non_sufficient_funds"
+    type: string; // "non_sufficient_funds"
     error_message?: string;
 }
 
