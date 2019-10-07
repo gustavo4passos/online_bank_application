@@ -88,8 +88,8 @@ class Bank:
 			if self.database[origin_account]["balance"] < amount:
 				self.database_access_lock.release()
 				return {
-				"status": ERROR_TYPE.NON_SUFFICIENT_FUNDS,
-				"data": ""
+					"status": ERROR_TYPE.NON_SUFFICIENT_FUNDS,
+					"data": ""
 				}
 
 			self.database[origin_account]["balance"] -= amount	
@@ -118,20 +118,23 @@ class Bank:
 			self.database_access_lock.acquire()
 			if self.database[account]["password"] == password:
 				self.database_access_lock.release()
-				return{
+
+				return {
 					"status": ERROR_TYPE.NO_ERROR,
 					"data": "Accepted login"
 				}
+
 			else:
 				self.database_access_lock.release()
 				return{
-				"status": ERROR_TYPE.WRONG_PASSWORD,
-				"data": ""
+					"status": ERROR_TYPE.WRONG_PASSWORD,
+					"data": ""
 				}
+
 		else:
-			return{
-				"status": ERROR_TYPE.INVALID_ACCOUNT,
-				"data": ""
+			return {
+					"status": ERROR_TYPE.INVALID_ACCOUNT,
+					"data": ""
 				}	
 	
 	def create_account(self, id, name, manager_account):

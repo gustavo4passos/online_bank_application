@@ -1,56 +1,3 @@
-# REQUESTS
-
-```typescript
-interface withdraw {
-    op: string; // s
-    account: string;
-    amount: number;
-    token: string;
-};
-
-interface transfer {
-    op: string; // t
-    account: string;
-    destination_account: string;
-    amount: number;
-    token: string;
-};
-
-interface deposit {
-    op: string; // d
-    account: string;
-    amount: number;
-};
-
-interface balance {
-    op: string; // b
-    account: string;
-    token: string;
-};
-
-interface create_account {
-    op: string; // c
-    account: string; 
-    token: string;
-    name: string;
-    password: string;
-};
-
-interface remove_account {
-    op: string; // r
-    account_to_remove: string;
-    account: string; 
-}
-
-interface get_client_info {
-    op: string; // g
-    account: string;
-}
-```
-
-# RESPONSES
-
-```typescript
 interface bad_request {
     type: string; // "bad_request";
 };
@@ -80,7 +27,7 @@ interface invalid_account {
 
 interface invalid_name {
     type: string; // "invalid_name"
-    name: string; 
+    name: string; // Nome tem numero, pontuacao, etc. Necessário?
     error_message?: string;
 }
 
@@ -105,4 +52,3 @@ interface account_info {
     name: string; 
     account: number;
 }
-```
