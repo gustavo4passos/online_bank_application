@@ -9,7 +9,7 @@ class ERROR_TYPE(Enum):
 	INVALID_ACCOUNT = 1,
 	INVALID_DESTINATION_ACCOUNT = 2,
 	INVALID_ID = 3,
-	NOT_A_MANAGER = 4
+	INVALID_MANAGER_ACCOUNT = 4
 	NON_SUFFICIENT_FUNDS = 5
 	WRONG_PASSWORD = 6
 
@@ -103,11 +103,13 @@ class Bank:
 			}
 		else:
 			if origin_account in self.database:
+				print("na vdd aqui")
 				return{
 				"status": ERROR_TYPE.INVALID_DESTINATION_ACCOUNT,
 				"data": ""
 				}
 			else:
+				print("aqui")
 				return{
 				"status": ERROR_TYPE.INVALID_ACCOUNT,
 				"data": ""
@@ -137,8 +139,35 @@ class Bank:
 					"data": ""
 				}	
 	
-	def create_account(self, id, name, manager_account):
-		return
+	def create_account(self, identification, name, password, manager_account):
+		self.database_access_lock.acquire()
+		if manager_account in self.database and self.database[manager_account]["is_manager"]:
+			new_account_number = self.database["private"]["next_account_number"]
+			self.database["private"]["next_account_number"] = self.database["private"]["next_account_number"] + 1
+			print(new_account_number)
+			data = {
+				new_account_number:{
+					"id":identification,
+					"name":name,
+					"password":password,
+					"balance":0,
+					"is_manager":0
+				}
+			}
+			self.database.update(data)
+			self.update_database()
+			self.database_access_lock.release()
+			return{
+				"status": ERROR_TYPE.NO_ERROR,
+				"data": ""
+			}
+		else:
+			self.database_access_lock.release()
+			return{
+				"status":ERROR_TYPE.INVALID_MANAGER_ACCOUNT,
+				"data": ""
+			}	
+	
 	
 	def update_database(self):
 		# Acquires database file access lock
@@ -151,3 +180,5 @@ class Bank:
 
 		# Releases database file access lock
 		self.dump_db_lock.release()
+
+
