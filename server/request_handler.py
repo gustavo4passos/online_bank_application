@@ -29,6 +29,8 @@ def handle_request(request, bank):
         return handle_request_transfer(request_obj, bank)
     elif op == 'g':
         return handle_request_get_owner_name(request_obj, bank)
+    elif op == 'r':
+        return handle_request_remove_account(request_obj, bank)
     else:
         return create_bad_request_response("Unknown operation")
 
@@ -132,11 +134,23 @@ def handle_request_get_owner_name(request_obj, bank):
     else:
         return create_bad_request_response()
 
+def handle_request_remove_account(request_obj, bank):
+    if all (key in request_obj for key in ("account_to_remove", "account", "token")):
+        account_to_remove = request_obj["account_to_remove"]
+        account            = request_obj["account"         ]
+        token              = request_obj["token"           ]
+        bank_response = bank.remove_account(account_to_remove, account, token)
+        return handle_default_response(bank_response)
+    else:
+        return create_bad_request_response()
+
 def create_error_response(bank_response):
     error_bank_response = bank_response["status"]
     if error_bank_response == ERROR_TYPE.NON_SUFFICIENT_FUNDS:
         return json.dumps({ "type": "non_sufficient_funds", "error_message": ""})
     elif error_bank_response  == ERROR_TYPE.INVALID_ACCOUNT:
+        return json.dumps({ "type": "invalid_account", "error_message": ""})
+    elif error_bank_response == ERROR_TYPE.INVALID_DESTINATION_ACCOUNT:
         return json.dumps({ "type": "invalid_account", "error_message": ""})
     elif error_bank_response  == ERROR_TYPE.INVALID_TOKEN:
         return json.dumps({ "type": "invalid_token", "error_message": ""})
@@ -172,6 +186,7 @@ def assert_types(request_obj):
         "destination_account":  str,
         "password":             str,
         "token":                str,
+        "account_to_remove":    str,
         "is_manager":           bool
     }
     # Amount needs special verification because it can either be

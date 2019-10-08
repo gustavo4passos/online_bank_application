@@ -15,12 +15,5 @@
     },
     "private": {
         "next_account_number": 3585
-    },
-    "3584": {
-        "id": "03124567",
-        "name": "Marciano Quatro",
-        "password": "tressim",
-        "balance": 968,
-        "is_manager": false
     }
 }

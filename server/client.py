@@ -31,7 +31,10 @@ def Main():
         # s.send(allMessage.encode('ascii')) 
         # s.send('{ "op": "c", "account": "3579", "id": "03124567", "name": "Marciano Quatro", "password": "tressim", "token": "12345", "is_manager": false }'.encode('ascii'))
         # s.send('{ "op": "l", "account": "3584", "password": "tressim" }'.encode('ascii'))
-        s.send('{ "op": "t", "account": "3584", "token": "trefssim", "destination_account": "3579", "amount": 16 }'.encode('ascii'))
+        # s.send('{ "op": "t", "account": "3584", "token": "trefssim", "destination_account": "3579", "amount": 16 }'.encode('ascii'))
+        s.send('{ "op": "g", "account": "3584"}'.encode('ascii'))
+        # s.send('{ "op": "r", "account_to_remove": "3584", "token": "12345", "account": "3579" }'.encode('ascii'))
+
   
         # messaga received from server 
         data = s.recv(1024) 
