@@ -29,7 +29,9 @@ def Main():
         # allMessage += message
         
         # s.send(allMessage.encode('ascii')) 
-        s.send('{ "op": "s", "account": "3580", "amount": 100, "token": "54321" }'.encode('ascii'))
+        # s.send('{ "op": "c", "account": "3579", "id": "03124567", "name": "Marciano Quatro", "password": "tressim", "token": "12345", "is_manager": false }'.encode('ascii'))
+        # s.send('{ "op": "l", "account": "3584", "password": "tressim" }'.encode('ascii'))
+        s.send('{ "op": "t", "account": "3584", "token": "trefssim", "destination_account": "3579", "amount": 16 }'.encode('ascii'))
   
         # messaga received from server 
         data = s.recv(1024) 
