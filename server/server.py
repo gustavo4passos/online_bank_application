@@ -2,7 +2,7 @@ import socket
 import threading
 import json
 
-from _thread import *
+from _thread import start_new_thread
 from bank    import Bank
 from logger  import Logger
 
@@ -14,8 +14,6 @@ def client_thread(connection, client_address):
 		data = connection.recv(1024)
 		if not data:
 			break
-		
-		global bank
 
 	Logger.log_info("Client on " + str(client_address) + " disconnected.")
 	connection.close()
@@ -30,10 +28,10 @@ def start_server():
 	listening_socket.listen(5)
 
 	while True:
-		client_socket, client_address = listening_socket.accept();	
+		client_socket, client_address = listening_socket.accept()
 		Logger.log_info("New client accepted on: " + str(client_address))
 		start_new_thread(client_thread, (client_socket, client_address))
 
-	listening_socket.close();
+	listening_socket.close()
 
 start_server()

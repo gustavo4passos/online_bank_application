@@ -45,8 +45,8 @@ class Bank:
 			if self.database[account_number]["balance"] < amount:
 				self.database_access_lock.release()
 				return {
-				"status": ERROR_TYPE.NON_SUFFICIENT_FUNDS,
-				"data": ""
+					"status": ERROR_TYPE.NON_SUFFICIENT_FUNDS,
+					"data": ""
 				}
 
 			self.database[account_number]["balance"] -= amount
@@ -137,7 +137,18 @@ class Bank:
 					"data": ""
 				}	
 	
-	def create_account(self, id, name, manager_account):
+	def create_account(self, id, name, password, manager_account):
+		self.database_access_lock.acquire()
+		next_account_number = self.database["private"]["next_account_number"]
+		self.database["private"]["next_account_number"] += 1
+		self.database[str(next_account_number)] = { 
+			"name": name,
+			"id": id,
+			"password": password,
+			"balance": 0
+		}
+		self.update_database()
+		self.database_access_lock.release()
 		return
 	
 	def update_database(self):
