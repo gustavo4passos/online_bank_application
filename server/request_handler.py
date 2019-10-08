@@ -133,17 +133,19 @@ def handle_request_get_owner_name(request_obj, bank):
         return create_bad_request_response()
 
 def create_error_response(bank_response):
-    error_bank_repsonse = bank_response["status"]
-    if error_bank_repsonse == ERROR_TYPE.NON_SUFFICIENT_FUNDS:
+    error_bank_response = bank_response["status"]
+    if error_bank_response == ERROR_TYPE.NON_SUFFICIENT_FUNDS:
         return json.dumps({ "type": "non_sufficient_funds", "error_message": ""})
-    elif error_bank_repsonse  == ERROR_TYPE.INVALID_ACCOUNT:
+    elif error_bank_response  == ERROR_TYPE.INVALID_ACCOUNT:
         return json.dumps({ "type": "invalid_account", "error_message": ""})
-    elif error_bank_repsonse  == ERROR_TYPE.INVALID_TOKEN:
+    elif error_bank_response  == ERROR_TYPE.INVALID_TOKEN:
         return json.dumps({ "type": "invalid_token", "error_message": ""})
-    elif error_bank_repsonse  == ERROR_TYPE.WRONG_PASSWORD:
+    elif error_bank_response  == ERROR_TYPE.WRONG_PASSWORD:
         return json.dumps({ "type": "wrong_password", "error_message": ""})
-    elif error_bank_repsonse == ERROR_TYPE.NOT_A_MANAGER:
+    elif error_bank_response == ERROR_TYPE.NOT_A_MANAGER:
         return json.dumps({ "type": "not_a_manager", "error_message": ""})
+    elif error_bank_response == ERROR_TYPE.INVALID_AMOUNT:
+        return json.dumps({ "type": "invalid_amount", "error_message": "Amount can't be negative." })
     # This should never happen
     else:
         Logger.log_error("Fatal: Bank response is unknown.")
