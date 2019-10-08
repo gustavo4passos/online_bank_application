@@ -155,7 +155,7 @@ def create_error_response(bank_response):
     elif error_bank_response  == ERROR_TYPE.INVALID_TOKEN:
         return json.dumps({ "type": "invalid_token", "error_message": ""})
     elif error_bank_response  == ERROR_TYPE.WRONG_PASSWORD:
-        return json.dumps({ "type": "login_fail", "error_message": ""})
+        return json.dumps({ "type": "wrong_password", "error_message": ""})
     elif error_bank_response == ERROR_TYPE.NOT_A_MANAGER:
         return json.dumps({ "type": "not_a_manager", "error_message": ""})
     elif error_bank_response == ERROR_TYPE.INVALID_AMOUNT:
