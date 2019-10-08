@@ -1,5 +1,5 @@
 # Simple Online Bank Simulator
-A simple online bank simulator using a client-server architecture.
+A simple online bank simulator using a client-server architecture written in Python.
 
 # PROTOCOL
 
