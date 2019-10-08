@@ -1,6 +1,7 @@
 import json
 from bank   import ERROR_TYPE
 from logger import Logger
+from enum   import Enum
 
 def handle_request(request, bank):
     request_obj = { }
@@ -54,13 +55,16 @@ def handle_request_login(request_obj, bank):
         if(bank_response["status"] != ERROR_TYPE.NO_ERROR):
             return create_error_response(bank_response)
         else:
-            name    = bank_response["data"]["name"   ]
-            token   = bank_response["data"]["token"  ]
-            balance = bank_response["data"]["balance"]
+            name       = bank_response["data"]["name"      ]
+            token      = bank_response["data"]["token"     ]
+            balance    = bank_response["data"]["balance"   ]
+            is_manager = bank_response["data"]["is_manager"]
+
             return json.dumps({ 
                 "type": "login_success", 
                 "name": name, 
-                "balance": balance, 
+                "balance": balance,
+                "is_manager": is_manager, 
                 "token": token
             })
     else:
@@ -102,7 +106,13 @@ def handle_request_create_account(request_obj, bank):
         is_manager      = request_obj["is_manager"]
 
         bank_response = bank.create_account(identification, name, password, account, is_manager, token)
-        return handle_default_response(bank_response)
+        if bank_response["status"] != ERROR_TYPE.NO_ERROR:
+            return create_error_response(bank_response)
+        else:
+            return json.dumps({
+                "type": "account_created",
+                "account": bank_response["data"]
+            })   
     else:
         return create_bad_request_response()
 
@@ -155,7 +165,7 @@ def create_error_response(bank_response):
     elif error_bank_response  == ERROR_TYPE.INVALID_TOKEN:
         return json.dumps({ "type": "invalid_token", "error_message": ""})
     elif error_bank_response  == ERROR_TYPE.WRONG_PASSWORD:
-        return json.dumps({ "type": "login_fail", "error_message": ""})
+        return json.dumps({ "type": "wrong_password", "error_message": ""})
     elif error_bank_response == ERROR_TYPE.NOT_A_MANAGER:
         return json.dumps({ "type": "not_a_manager", "error_message": ""})
     elif error_bank_response == ERROR_TYPE.INVALID_AMOUNT:

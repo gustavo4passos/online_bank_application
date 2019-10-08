@@ -12,6 +12,7 @@ interface login_success {
     type: string; // "login_success"
     name: string; // client name
     balance: number;
+    is_manager: string;
     token: string;
 };
 
@@ -24,6 +25,11 @@ interface balance {
     type: string; // "balance"
     balance: number;   
 };
+
+interface account_created {
+    type: string; // "account_created"
+    account: string;
+}
 
 interface invalid_id {
     type: string; // "invalid_id"
