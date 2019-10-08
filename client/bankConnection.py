@@ -96,7 +96,10 @@ class Connection:
 
         data = self.socket.recv(1024)
         answer = json.loads(data)
-        print(answer)
+        print(answer["type"] + ':')
+        if(answer["type"] == "account_info"):
+            print('Name: ' + answer["name"])
+            print('Account: ' + answer["account"])
 
     def request_balance(self, account):
         requisition = {}
@@ -129,7 +132,10 @@ class Connection:
 
         data = self.socket.recv(1024)
         answer = json.loads(data)
-        print(answer)
+        if(answer["type"] == "account_created"):
+            print(answer["type"] + ' ' + 'numero da conta: ' + answer["account"])
+        else:    
+            print(answer["type"])
         
         
 

@@ -145,6 +145,7 @@ class Bank:
 						"token": password,
 						"name": self.database[account]["name"],
 						"balance": self.database[account]["balance"],
+						"is_manager": self.database[account]["is_manager"]
 					}
 				}
 
@@ -194,7 +195,7 @@ class Bank:
 
 			return {
 				"status": ERROR_TYPE.NO_ERROR,
-				"data": ""
+				"data": str(new_account_number)
 			}
 	
 	def remove_account(self, account_to_remove, manager_account, token):

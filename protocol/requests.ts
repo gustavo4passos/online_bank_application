@@ -24,6 +24,7 @@ interface deposit {
     op: string; // d
     account: string;
     amount: number;
+    token: string;
 };
 
 interface balance {

@@ -7,10 +7,8 @@ from bankConnection import Connection
 def Main(): 
     #connect
     connection = Connection()
-    print(connection.is_connected())
 
     while True: 
-        print('Running')
         # read message to send to serve
         op = input('\nOperacao: ')
         if op == 'quit': 
@@ -55,10 +53,10 @@ def Main():
             if(connection.is_logged_in() == False):
                 print('Operação necessita do login administrador')
             account = input('Conta:' )
-            id = input('RG:' )
-            name = input('Nome:' )
-            password = input('Password:' )
-            manager = input('Administrador: S/N' )
+            id = input('RG: ' )
+            name = input('Nome: ' )
+            password = input('Password: ' )
+            manager = input('Administrador? S/N: ' )
             if(manager == 'S'):
                 is_manager = True
             else:
