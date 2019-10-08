@@ -3,7 +3,7 @@ widthdraw -> ok, invalid_account, invalid_amount, invalid_token
 transfer -> ok, invalid_account, invalid_amount, invalid_token
 deposit -> ok, invalid_account, invalid_amount, invalid_token
 balance -> balance, invalid_account, invalid_token
-create_account -> ok, invalid_account, not_a_manager, invalid_token
+create_account -> account_created, invalid_account, not_a_manager, invalid_token
 remove_account -> ok, invalid_account, not_a_manager
 get_owner_name -> account_info, invalid_account
 

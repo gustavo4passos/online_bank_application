@@ -1,4 +1,7 @@
 {
+    "private": {
+        "next_account_number": 3589
+    },
     "3579": {
         "id": "0123456",
         "password": "12345",
@@ -12,8 +15,5 @@
         "name": "Gustavo",
         "balance": 3100,
         "is_manager": false
-    },
-    "private": {
-        "next_account_number": 3585
     }
 }
