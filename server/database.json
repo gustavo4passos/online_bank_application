@@ -3,7 +3,7 @@
         "id": "0123456",
         "password": "12345",
         "name": "Daniel",
-        "balance": 0,
+        "balance": 903.5,
         "is_manager": true
     },
     "3580": {
@@ -14,6 +14,13 @@
         "is_manager": false
     },
     "private": {
-        "next_account_number": 3581
+        "next_account_number": 3585
+    },
+    "3584": {
+        "id": "03124567",
+        "name": "Marciano Quatro",
+        "password": "tressim",
+        "balance": 968,
+        "is_manager": false
     }
 }

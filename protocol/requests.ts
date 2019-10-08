@@ -39,10 +39,10 @@ interface create_account {
     op: string; // c
     account: string; // conta que esta tentando executar a operacao
     id: string; // RG
-    token: string;
     name: string;
     password: string;
     is_manager: boolean;
+    token: string;
 };
 
 // Requests (cont.)
@@ -53,7 +53,7 @@ interface remove_account {
     token: string; 
 }
 
-interface get_client_info {
+interface get_owner_name {
     op: string; // g
     account: string;
 }
