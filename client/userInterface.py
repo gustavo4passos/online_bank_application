@@ -10,13 +10,12 @@ def Main():
     print(connection.is_connected())
 
     while True: 
-  
+        print('Running')
         # read message to send to serve
         op = input('\nOperacao: ')
         if op == 'quit': 
             break
         
-
         if(op == 'l'):
             account = input('Conta: ')
             password = input('Senha: ')
@@ -62,24 +61,7 @@ def Main():
         elif(op == 'r'):
             account_to_remove = input('Conta a ser removida:' )
             account = input('Conta:' )
-            connection.request_remove_account(account_to_remove, account)             
-
-   
-
-    
-        #answer = answer.split('/')
-        #if(answer[0] == "OK"):
-        #    print("Success")
-        #elif(answer[0] == "BALANCE"):
-        #    print("Saldo = " + str(answer[2]))    
-        #elif(answer[0] == "INVALID_ACCOUNT"):
-        #    print("Invalide acount, please create one")
-        #elif(answer[0] == "INVALID_DESTINATION_ACCOUNT"):
-        #    print("Destination account doesn't exist")
-        #elif(answer[0] == "INVALID_AMOUNT"):
-        #    print("Invalid amount")
-        #elif(answer[0] == "BAD_REQUEST"):
-        #    print("BAD REQUEST")                
+            connection.request_remove_account(account_to_remove, account)                    
         
    
   
