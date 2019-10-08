@@ -1,0 +1,15 @@
+{
+   "3579":{
+      "password":"12345",
+      "name":"Daniel",
+      "balance":0
+   },
+   "3580":{
+      "password":"54321",
+      "name":"Gustavo",
+      "balance":100
+   },
+   "private":{
+      "next_account_number":3581
+   }
+}
