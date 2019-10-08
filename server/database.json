@@ -1,11 +1,4 @@
 {
-    "3579": {
-        "id": "0123456",
-        "password": "12345",
-        "name": "Daniel",
-        "balance": 903.5,
-        "is_manager": true
-    },
     "3580": {
         "id": "987564",
         "password": "54321",
@@ -14,6 +7,13 @@
         "is_manager": false
     },
     "private": {
-        "next_account_number": 3585
+        "next_account_number": 3586
+    },
+    "3585": {
+        "id": "123",
+        "name": "Alissi1",
+        "password": "321",
+        "balance": 500,
+        "is_manager": true
     }
 }

@@ -48,14 +48,14 @@ class Connection:
         requisition = {}
         requisition['op'] = 's'
         requisition['account'] = account
-        requisition['amount'] = amount
+        requisition['amount'] = int(amount)
         requisition['token'] = self.token
         json_req = json.dumps(requisition)
         self.socket.send(json_req.encode('ascii'))
 
         data = self.socket.recv(1024)
         answer = json.loads(data)
-        print(answer)
+        print(answer["type"])
 
         
 
@@ -63,13 +63,13 @@ class Connection:
         requisition = {}
         requisition['op'] = 'd'
         requisition['account'] = account
-        requisition['amount'] = amount
+        requisition['amount'] = int(amount)
         json_req = json.dumps(requisition)
         self.socket.send(json_req.encode('ascii'))
 
         data = self.socket.recv(1024)
         answer = json.loads(data)
-        print(answer)
+        print(answer["type"])
         
 
     def request_transfer(self, account, destination_acount, amount):
@@ -77,14 +77,14 @@ class Connection:
         requisition['op'] = 't'
         requisition['account'] = account
         requisition['destination_acount'] = destination_acount
-        requisition['amount'] = amount
+        requisition['amount'] = int(amount)
         requisition['token'] = self.token
         json_req = json.dumps(requisition)
         self.socket.send(json_req.encode('ascii'))
 
         data = self.socket.recv(1024)
         answer = json.loads(data)
-        print(answer)
+        print(answer["type"])
         
 
     def request_client_info(self, account):
@@ -108,15 +108,18 @@ class Connection:
 
         data = self.socket.recv(1024)
         answer = json.loads(data)
-        print(answer["balance"])
+        if(answer["type"] == "balance"):
+            print(answer["balance"])
+        else:   
+            print('Error')
         
     
 
-    def request_create_account(self, account, id, name, password, is_manager):
+    def request_create_account(self, account, identification, name, password, is_manager):
         requisition = {}
         requisition['op'] = 'c'
         requisition['account'] = account
-        requisition['id'] = id
+        requisition['id'] = identification
         requisition['name'] = name
         requisition['password'] = password
         requisition['is_manager'] = is_manager
@@ -133,8 +136,8 @@ class Connection:
     def request_remove_account(self, account_to_remove, account):
         requisition = {}
         requisition['op'] = 'r'
-        requisition['account_to_remove'] = account
-        requisition['id'] = id
+        requisition['account_to_remove'] = account_to_remove
+        requisition['account'] = account
         requisition['token'] = self.token
         json_req = json.dumps(requisition)
         self.socket.send(json_req.encode('ascii'))
