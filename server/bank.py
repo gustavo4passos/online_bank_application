@@ -22,8 +22,9 @@ class Bank:
 		self.database = json.load(json_db_file)
 		json_db_file.close()
 
-		self.invalid_token_response = { "status": ERROR_TYPE.INVALID_TOKEN, "data": "" }
-		self.invalid_amount_response = { "status": ERROR_TYPE.INVALID_AMOUNT, "data": "" }
+		self.invalid_token_response   = { "status": ERROR_TYPE.INVALID_TOKEN,   "data": "" }
+		self.invalid_amount_response  = { "status": ERROR_TYPE.INVALID_AMOUNT,  "data": "" }
+		self.invalid_account_response = { "status": ERROR_TYPE.INVALID_ACCOUNT, "data": "" }
 		self.dump_db_lock = threading.Lock()
 		self.database_access_lock = threading.Lock()
 		Logger.log_info("Bank database has loaded.")
@@ -35,10 +36,7 @@ class Bank:
 		self.database_access_lock.acquire()
 		if account_number not in self.database:
 			self.database_access_lock.release()
-			return {
-				"status": ERROR_TYPE.INVALID_ACCOUNT,
-				"data": "" 
-			}
+			return self.invalid_account_response
 
 		else:
 			result = { 
@@ -76,10 +74,7 @@ class Bank:
 
 		else:
 			self.database_access_lock.release()
-			return {
-				"status": ERROR_TYPE.INVALID_ACCOUNT,
-				"data": ""
-			}
+			return self.invalid_account_response
 
 	def deposit(self, destination_account, amount):
 		if amount < 0:
@@ -99,10 +94,7 @@ class Bank:
 
 		else:
 			self.database_access_lock.release()
-			return {
-				"status": ERROR_TYPE.INVALID_ACCOUNT,
-				"data": ""
-			}	
+			return self.invalid_account_response
 	
 	def transfer(self, origin_account, destination_account, amount, token):
 		if not self.validate_token(origin_account, token):
@@ -139,10 +131,7 @@ class Bank:
 				}
 			else:
 				self.database_access_lock.release()
-				return{
-				"status": ERROR_TYPE.INVALID_ACCOUNT,
-				"data": ""
-				}	
+				return self.invalid_account_response
 	
 	def login(self, account, password):
 		self.database_access_lock.acquire()
@@ -167,10 +156,8 @@ class Bank:
 				}
 
 		else:
-			return {
-					"status": ERROR_TYPE.INVALID_ACCOUNT,
-					"data": ""
-				}	
+			self.database_access_lock.release()
+			return self.invalid_account_response
 	
 	def create_account(self, identification, name, password, manager_account, is_manager, token):
 		if not self.validate_token(manager_account, token):
@@ -210,14 +197,43 @@ class Bank:
 				"data": ""
 			}
 	
+	def remove_account(self, account_to_remove, manager_account, token):
+		if not self.validate_token(manager_account, token):
+			return self.invalid_token_response
+
+		self.database_access_lock.acquire()
+		if manager_account not in self.database:
+			self.database_access_lock.release()
+			return self.invalid_account_response
+
+		elif not self.database[manager_account]["is_manager"]:
+			self.database_access_lock.release()
+			return {
+				"status": ERROR_TYPE.NOT_A_MANAGER,
+				"data": ""
+			}
+
+		elif account_to_remove not in self.database:
+			self.database_access_lock.release()
+			return {
+				"status": ERROR_TYPE.INVALID_DESTINATION_ACCOUNT,
+				"data": ""
+			}
+		else:
+			del self.database[account_to_remove]
+			self.update_database()
+			self.database_access_lock.release()
+			return {
+				"status": ERROR_TYPE.NO_ERROR,
+				"data": ""
+			}
+
 	def get_owner_name(self, account):
 		self.database_access_lock.acquire()
 		if account not in self.database:
 			self.database_access_lock.release()
-			return {
-				"status": ERROR_TYPE.INVALID_ACCOUNT,
-				"data": ""
-			}
+			return self.invalid_account_response
+
 		else:
 			self.database_access_lock.release()
 			return {
@@ -248,6 +264,6 @@ class Bank:
 		if self.database[account]["password"] != token:
 			self.database_access_lock.release()
 			return False
-			
+
 		self.database_access_lock.release()
 		return True
