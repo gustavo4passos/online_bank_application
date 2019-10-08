@@ -34,7 +34,6 @@ def Main():
         data = s.recv(1024) 
   
         # print the received message 
-        # here it would be a reverse of sent message 
         print('Received from the server :',str(data.decode('ascii'))) 
   
         # ask the client whether he wants to continue 
