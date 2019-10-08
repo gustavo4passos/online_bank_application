@@ -62,6 +62,7 @@ class Bank:
 			self.update_database()
 			self.database_access_lock.release()
 			
+			Logger.log_info("Withdraw operation on account: " + account_number)
 			return {
 				"status": ERROR_TYPE.NO_ERROR,
 				"data": ""
@@ -80,6 +81,7 @@ class Bank:
 			self.update_database()
 			self.database_access_lock.release()
 
+			Logger.log_info("Deposit operation on account: " + destination_account)
 			return { 
 				"status": ERROR_TYPE.NO_ERROR,
 				"data": ""
@@ -109,6 +111,7 @@ class Bank:
 			self.update_database()
 			self.database_access_lock.release()
 
+			Logger.log_info("Transfer operation from account '" + origin_account + "' to account '" + destination_account + "'")
 			return {
 				"status": ERROR_TYPE.NO_ERROR,
 				"data": ""
@@ -153,7 +156,7 @@ class Bank:
 					"data": ""
 				}	
 	
-	def create_account(self, identification, name, password, manager_account):
+	def create_account(self, identification, name, password, manager_account, is_manager):
 		self.database_access_lock.acquire()
 		if manager_account not in self.database:
 			self.database_access_lock.release()
@@ -176,7 +179,7 @@ class Bank:
 					"name": name,
 					"password": password,
 					"balance": 0,
-					"is_manager": 0
+					"is_manager": is_manager
 			}
 
 			self.update_database()
@@ -194,7 +197,7 @@ class Bank:
 
 		# Dumps bank database to json file	
 		db_file = open(self.database_file_name, "w+")
-		json.dump(self.database, db_file)
+		json.dump(self.database, db_file, indent=4)
 		db_file.close()
 
 		# Releases database file access lock

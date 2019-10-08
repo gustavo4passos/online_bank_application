@@ -35,11 +35,12 @@ interface balance {
 
 interface create_account {
     op: string; // c
-	account: string; 
-	id: string; // RG
+    account: string; 
+    id: string;
     token: string;
     name: string;
     password: string;
+    is_manager: boolean;
 };
 
 interface remove_account {
