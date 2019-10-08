@@ -83,7 +83,7 @@ class Bank:
 			}	
 	
 	def transfer(self, origin_account, destination_account, amount):
-		if origin_account and destination_account in self.database:
+		if (origin_account in self.database) and (destination_account in self.database):
 			self.database_access_lock.acquire()
 			if self.database[origin_account]["balance"] < amount:
 				self.database_access_lock.release()
@@ -103,13 +103,11 @@ class Bank:
 			}
 		else:
 			if origin_account in self.database:
-				print("na vdd aqui")
 				return{
 				"status": ERROR_TYPE.INVALID_DESTINATION_ACCOUNT,
 				"data": ""
 				}
 			else:
-				print("aqui")
 				return{
 				"status": ERROR_TYPE.INVALID_ACCOUNT,
 				"data": ""
@@ -157,6 +155,9 @@ class Bank:
 			self.database.update(data)
 			self.update_database()
 			self.database_access_lock.release()
+			json_db_file = open(self.database_file_name)
+			self.database = json.load(json_db_file)
+			json_db_file.close()
 			return{
 				"status": ERROR_TYPE.NO_ERROR,
 				"data": ""
@@ -181,4 +182,7 @@ class Bank:
 		# Releases database file access lock
 		self.dump_db_lock.release()
 
+	def get_database(self):
+		return self.database
+		
 
