@@ -8,10 +8,13 @@ def handle_request(request, bank):
     if("op" not in request_obj):
         return create_bad_request_response("Request is missing operation specifier.")
 
-    if request_obj['op'] == 's':
+    op = request_obj['op']
+    if op == 's':
         return handle_request_withdraw(request_obj, bank)
-    elif request_obj['op'] == 'l':
+    elif op == 'l':
         return handle_request_login(request_obj, bank)
+    elif op == 'd':
+        return handle_request_deposit(request_obj, bank)
     else:
         response = { "type": "bad_request" }
         return json.dumps(response)
@@ -23,10 +26,6 @@ def handle_request_withdraw(request_obj, bank):
         token   = request_obj["token"]
         bank_response = bank.withdraw(account, amount, token)
 
-        #This should never happen
-        if "status" not in bank_response:
-            Logger.log_error("Fatal: Bank response has no status field")
-            return create_bad_request_response()
         if(bank_response["status"] != ERROR_TYPE.NO_ERROR):
             return create_error_response(bank_response)            
         else:
@@ -40,11 +39,6 @@ def handle_request_login(request_obj, bank):
         password = request_obj["password"]
         bank_response = bank.login(account, password)
 
-        #This should never happen
-        if "status" not in bank_response:
-            Logger.log_error("Fatal: Bank response has no status field")
-            return create_bad_request_response()
-        
         if(bank_response["status"] != ERROR_TYPE.NO_ERROR):
             return create_error_response(bank_response)
         else:
@@ -60,6 +54,20 @@ def handle_request_login(request_obj, bank):
     else:
         return create_bad_request_response()
     
+
+def handle_request_deposit(request_obj, bank):
+    if "account" in request_obj and "amount" in request_obj:
+        account = request_obj["account"]
+        amount  = request_obj["amount" ]
+
+        bank_response = bank.deposit(account, amount)
+        
+        if bank_response["status"] != ERROR_TYPE.NO_ERROR:
+            return create_error_response(bank_response)
+        else:
+            return create_ok_response()
+    else:
+        return create_bad_request_response()
 
 def create_error_response(bank_response):
     if bank_response["status"] == ERROR_TYPE.NON_SUFFICIENT_FUNDS:
