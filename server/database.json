@@ -1,15 +1,19 @@
 {
-   "3579":{
-      "password":"12345",
-      "name":"Daniel",
-      "balance":0
-   },
-   "3580":{
-      "password":"54321",
-      "name":"Gustavo",
-      "balance":100
-   },
-   "private":{
-      "next_account_number":3581
-   }
+    "3579": {
+        "id": "0123456",
+        "password": "12345",
+        "name": "Daniel",
+        "balance": 0,
+        "is_manager": true
+    },
+    "3580": {
+        "id": "987564",
+        "password": "54321",
+        "name": "Gustavo",
+        "balance": 3100,
+        "is_manager": false
+    },
+    "private": {
+        "next_account_number": 3581
+    }
 }

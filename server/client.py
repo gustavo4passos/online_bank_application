@@ -17,28 +17,33 @@ def Main():
     # message you send to server 
     while True: 
   
-        # message sent to server
-        allMessage = ''
-        message = input('\nName: ')
-        if message == 'quit': 
-            break
-        allMessage += message+'/'
-        message = input('Operation: ')
-        allMessage += message+'/'
-        message = input('Valor: ')
-        allMessage += message
+        # # message sent to server
+        # allMessage = ''
+        # message = input('\nName: ')
+        # if message == 'quit': 
+        #     break
+        # allMessage += message+'/'
+        # message = input('Operation: ')
+        # allMessage += message+'/'
+        # message = input('Valor: ')
+        # allMessage += message
         
-        s.send(allMessage.encode('ascii')) 
+        # s.send(allMessage.encode('ascii')) 
+        s.send('{ "op": "s", "account": "3580", "amount": 100, "token": "54321" }'.encode('ascii'))
   
         # messaga received from server 
         data = s.recv(1024) 
   
         # print the received message 
+<<<<<<< HEAD
         print('Received from the server :',str(data.decode('ascii'))) 
+=======
+        # here it would be a reverse of sent message 
+        print('Received from the server :',str(data.decode('utf-8'))) 
+        break
+>>>>>>> e8c90fb321a5251acc0bf5cbbf2e1c6dd9b183c2
   
         # ask the client whether he wants to continue 
-        
-        
         
     # close the connection 
     s.close() 

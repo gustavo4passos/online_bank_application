@@ -1,4 +1,9 @@
 // REQUESTS
+interface login {
+    op: string; // l
+    account: string;
+    password: string;
+}
 
 interface withdraw {
     op: string; // s
@@ -37,6 +42,7 @@ interface create_account {
     token: string;
     name: string;
     password: string;
+    is_manager: boolean;
 };
 
 // Requests (cont.)

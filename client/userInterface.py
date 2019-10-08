@@ -20,22 +20,50 @@ def Main():
         if(op == 'l'):
             account = input('Conta: ')
             password = input('Senha: ')
+            connection.request_login(account, password)
             
         elif(op == 'd'):
             account = input('Conta: ')
             amount = input('Valor: ')
+            connection.request_deposit(account, amount)
             
         elif(op == 's'):
             account = input('Conta: ')
             amount = input('Valor: ')
             connection.request_withdrawal(account, amount)
+
         elif(op == 't'):
             account = input('Conta: ')
             destination_account = input('Conta favorecida: ')
             amount = input('Valor: ')
+            connection.request_transfer(account, destination_account, amount)
             
-        elif(op == 'c'):
+        elif(op == 'g'):
             account = input('Conta: ')
+            connection.request_client_info(account)
+
+        elif(op == 'b'):
+            account = input('Conta:' )
+            connection.request_balance(account)
+
+        elif(op == 'c'):
+            account = input('Conta:' )
+            id = input('RG:' )
+            name = input('Nome:' )
+            password = input('Password:' )
+            manager = input('Administrador: S/N' )
+            if(manager == 'S'):
+                is_manager = True
+            else:
+                is_manager = False
+            
+            connection.request_create_account(account, id, name, password, is_manager)
+
+        elif(op == 'r'):
+            account_to_remove = input('Conta a ser removida:' )
+            account = input('Conta:' )
+            connection.request_remove_account(account_to_remove, account)             
+
    
 
     

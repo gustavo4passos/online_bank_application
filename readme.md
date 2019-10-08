@@ -1,3 +1,6 @@
+# Simple Online Bank Simulator
+A simple online bank simulator using a client-server architecture written in Python.
+
 # PROTOCOL
 
 ### REQUESTS
@@ -32,11 +35,12 @@ interface balance {
 
 interface create_account {
     op: string; // c
-	account: string; 
-	id: string; // RG
+    account: string; 
+    id: string;
     token: string;
     name: string;
     password: string;
+    is_manager: boolean;
 };
 
 interface remove_account {
