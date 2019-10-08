@@ -29,7 +29,7 @@ def Main():
         # allMessage += message
         
         # s.send(allMessage.encode('ascii')) 
-        s.send('{ "op": "d", "account": "3580", "amount": 100}'.encode('ascii'))
+        s.send('{ "op": "s", "account": "3580", "amount": 100, "token": "54321" }'.encode('ascii'))
   
         # messaga received from server 
         data = s.recv(1024) 

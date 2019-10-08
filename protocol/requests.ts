@@ -42,6 +42,7 @@ interface create_account {
     token: string;
     name: string;
     password: string;
+    is_manager: boolean;
 };
 
 // Requests (cont.)
