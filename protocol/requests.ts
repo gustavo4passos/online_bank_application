@@ -1,4 +1,9 @@
 // REQUESTS
+interface login {
+    op: string; // l
+    account: string;
+    password: string;
+}
 
 interface withdraw {
     op: string; // s
@@ -20,7 +25,7 @@ interface deposit {
     account: string;
     amount: number;
 };
-
+g
 interface balance {
     op: string; // b
     account: string;

@@ -5,13 +5,14 @@ from enum   import Enum
 from logger import Logger
 
 class ERROR_TYPE(Enum):
-	NO_ERROR = 0,
-	INVALID_ACCOUNT = 1,
+	NO_ERROR                    = 0,
+	INVALID_ACCOUNT             = 1,
 	INVALID_DESTINATION_ACCOUNT = 2,
-	INVALID_ID = 3,
-	INVALID_MANAGER_ACCOUNT = 4
-	NON_SUFFICIENT_FUNDS = 5
-	WRONG_PASSWORD = 6
+	INVALID_ID                  = 3,
+	NOT_A_MANAGER               = 4,
+	NON_SUFFICIENT_FUNDS        = 5
+	WRONG_PASSWORD              = 6,
+	INVALID_TOKEN               = 7
 
 class Bank:
 	def __init__(self, database_file):
@@ -20,33 +21,41 @@ class Bank:
 		self.database = json.load(json_db_file)
 		json_db_file.close()
 
+		self.invalid_token_response = { "status": ERROR_TYPE.INVALID_TOKEN, "data": "" }
 		self.dump_db_lock = threading.Lock()
 		self.database_access_lock = threading.Lock()
 		Logger.log_info("Bank database has loaded.")
 	
-	def get_balance(self, account_number):
-		if account_number in self.database:
+	def get_balance(self, account_number, token):
+		if not self.validate_token(account_number, token):
+			return self.invalid_token_response
+
+		elif account_number not in self.database:
+			return {
+				"status": ERROR_TYPE.INVALID_ACCOUNT,
+				"data": "" 
+			}
+
+		else:
 			self.database_access_lock.acquire()
 			result = { 
 				"status": ERROR_TYPE.NO_ERROR,
-				"data": self.database[account_number] }
+				"data": self.database[account_number]["balance"] 
+			}
 			self.database_access_lock.release()
-
 			return result
-
-		else:
-			return {
-				"status": ERROR_TYPE.INVALID_ACCOUNT,
-				"data": "" }
 	
-	def withdraw(self, account_number, amount):
+	def withdraw(self, account_number, amount, token):
+		if not self.validate_token(account_number, token):
+			return self.invalid_token_response
+
 		if account_number in self.database:
 			self.database_access_lock.acquire()
 			if self.database[account_number]["balance"] < amount:
 				self.database_access_lock.release()
 				return {
-				"status": ERROR_TYPE.NON_SUFFICIENT_FUNDS,
-				"data": ""
+					"status": ERROR_TYPE.NON_SUFFICIENT_FUNDS,
+					"data": ""
 				}
 
 			self.database[account_number]["balance"] -= amount
@@ -82,8 +91,11 @@ class Bank:
 				"data": ""
 			}	
 	
-	def transfer(self, origin_account, destination_account, amount):
-		if (origin_account in self.database) and (destination_account in self.database):
+	def transfer(self, origin_account, destination_account, amount, token):
+		if not self.validate_token(origin_account, token):
+			return self.invalid_token_response
+	
+		if origin_account in self.database and destination_account in self.database:
 			self.database_access_lock.acquire()
 			if self.database[origin_account]["balance"] < amount:
 				self.database_access_lock.release()
@@ -121,7 +133,11 @@ class Bank:
 
 				return {
 					"status": ERROR_TYPE.NO_ERROR,
-					"data": "Accepted login"
+					"data": {
+						"token": password,
+						"name": self.database[account]["name"],
+						"balance": self.database[account]["balance"],
+					}
 				}
 
 			else:
@@ -139,36 +155,38 @@ class Bank:
 	
 	def create_account(self, identification, name, password, manager_account):
 		self.database_access_lock.acquire()
-		if manager_account in self.database and self.database[manager_account]["is_manager"]:
-			new_account_number = self.database["private"]["next_account_number"]
-			self.database["private"]["next_account_number"] = self.database["private"]["next_account_number"] + 1
-			print(new_account_number)
-			data = {
-				new_account_number:{
-					"id":identification,
-					"name":name,
-					"password":password,
-					"balance":0,
-					"is_manager":0
-				}
-			}
-			self.database.update(data)
-			self.update_database()
+		if manager_account not in self.database:
 			self.database_access_lock.release()
-			json_db_file = open(self.database_file_name)
-			self.database = json.load(json_db_file)
-			json_db_file.close()
-			return{
-				"status": ERROR_TYPE.NO_ERROR,
+			return {
+				"error": ERROR_TYPE.INVALID_ACCOUNT,
+				"data": ""
+			}		
+		elif not self.database[manager_account]["is_manager"]:
+			self.database_access_lock.release()
+			return {
+				"error": ERROR_TYPE.NOT_A_MANAGER,
 				"data": ""
 			}
 		else:
+			new_account_number = self.database["private"]["next_account_number"]
+			self.database["private"]["next_account_number"] += 1
+
+			self.database[str(new_account_number)] = {
+					"id": identification,
+					"name": name,
+					"password": password,
+					"balance": 0,
+					"is_manager": 0
+			}
+
+			self.update_database()
 			self.database_access_lock.release()
-			return{
-				"status":ERROR_TYPE.INVALID_MANAGER_ACCOUNT,
+			Logger.log_info("New account created. Number: " + str(new_account_number))
+
+			return {
+				"status": ERROR_TYPE.NO_ERROR,
 				"data": ""
-			}	
-	
+			}
 	
 	def update_database(self):
 		# Acquires database file access lock
@@ -182,7 +200,9 @@ class Bank:
 		# Releases database file access lock
 		self.dump_db_lock.release()
 
-	def get_database(self):
-		return self.database
-		
-
+	def validate_token(self, account, token):
+		if account not in self.database:
+			return False
+		if self.database[account]["password"] != token:
+			return False
+		return True
