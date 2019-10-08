@@ -12,7 +12,8 @@ class Connection:
     
         s = socket.socket(socket.AF_INET,socket.SOCK_STREAM) 
     
-        # connect to server 
+        # connect to server
+        self.logged_in = False 
         self.connection = True
         try:
             s.connect((host,port)) 
@@ -23,6 +24,9 @@ class Connection:
 
     def is_connected(self):
         return self.connection
+
+    def is_logged_in(self):
+        return self.logged_in    
 
     def request_login(self, account, password):
         requisition = {}
@@ -37,20 +41,62 @@ class Connection:
         print(answer["type"])
         if(answer["type"] == "login_success"):
             self.token = answer["token"]
+            self.logged_in = True
         #self.socket.send('{ "op": "t", "account": "3584", "token": "trefssim", "destination_account": "3579", "amount": 16 }'.encode('ascii'))    
 
     def request_withdrawal(self, account, amount):
+        requisition = {}
+        requisition['op'] = 's'
+        requisition['account'] = account
+        requisition['amount'] = amount
+        requisition['token'] = self.token
+        json_req = json.dumps(requisition)
+        self.socket.send(json_req.encode('ascii'))
 
-        return True
+        data = self.socket.recv(1024)
+        answer = json.loads(data)
+        print(answer)
+
+        
 
     def request_deposit(self, account, amount):
-        return True
+        requisition = {}
+        requisition['op'] = 'd'
+        requisition['account'] = account
+        requisition['amount'] = amount
+        json_req = json.dumps(requisition)
+        self.socket.send(json_req.encode('ascii'))
+
+        data = self.socket.recv(1024)
+        answer = json.loads(data)
+        print(answer)
+        
 
     def request_transfer(self, account, destination_acount, amount):
-        return True
+        requisition = {}
+        requisition['op'] = 't'
+        requisition['account'] = account
+        requisition['destination_acount'] = destination_acount
+        requisition['amount'] = amount
+        requisition['token'] = self.token
+        json_req = json.dumps(requisition)
+        self.socket.send(json_req.encode('ascii'))
+
+        data = self.socket.recv(1024)
+        answer = json.loads(data)
+        print(answer)
+        
 
     def request_client_info(self, account):
-        return True
+        requisition = {}
+        requisition['op'] = 'g'
+        requisition['account'] = account
+        json_req = json.dumps(requisition)
+        self.socket.send(json_req.encode('ascii'))
+
+        data = self.socket.recv(1024)
+        answer = json.loads(data)
+        print(answer)
 
     def request_balance(self, account):
         requisition = {}
@@ -67,11 +113,37 @@ class Connection:
     
 
     def request_create_account(self, account, id, name, password, is_manager):
+        requisition = {}
+        requisition['op'] = 'c'
+        requisition['account'] = account
+        requisition['id'] = id
+        requisition['name'] = name
+        requisition['password'] = password
+        requisition['is_manager'] = is_manager
+        requisition['token'] = self.token
+        json_req = json.dumps(requisition)
+        self.socket.send(json_req.encode('ascii'))
+
+        data = self.socket.recv(1024)
+        answer = json.loads(data)
+        print(answer)
         
-        return True
+        
 
     def request_remove_account(self, account_to_remove, account):
-        return True                            
+        requisition = {}
+        requisition['op'] = 'r'
+        requisition['account_to_remove'] = account
+        requisition['id'] = id
+        requisition['token'] = self.token
+        json_req = json.dumps(requisition)
+        self.socket.send(json_req.encode('ascii'))
+
+        data = self.socket.recv(1024)
+        answer = json.loads(data)
+        print(answer)
+        
+                  
 
 
     

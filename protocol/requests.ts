@@ -45,7 +45,6 @@ interface create_account {
     token: string;
 };
 
-// Requests (cont.)
 interface remove_account {
     op: string; // r
     account_to_remove: string;
