@@ -1,20 +1,44 @@
+#####################################################
+#												   	#
+#	Universidade Federal da Bahia		   		   	#
+#	Fundamentos de Sistemas Distribuidos		   	#
+# 												   	#
+#	Gustavo Passos								   	#
+#	Daniel Lopes								   	#
+# 	Alisson Souza								   	#
+#												   	#
+#####################################################
+
+# This module is reponsible for parsing and performing requess
+# to the bank module. After performing the request, it returns
+# a response message that can be sent through the network.
+# For more information on the request and respose messages format, 
+# look in the /protocol/ folder
+
+
 import json
 from bank   import ERROR_TYPE
 from logger import Logger
 from enum   import Enum
 
+# Parses and serves a request sent through the network
 def handle_request(request, bank):
     request_obj = { }
+    # Checks if the request is valid json
     try:
         request_obj = json.loads(request)
     except:
         return create_bad_request_response("Request is not valid json")
 
+    # Checks if the types are correct
+    # Because python is not typed, this needs to be done before perfoming
+    # the operations through the bank module.
     if not assert_types(request_obj):
         return create_bad_request_response("Type mismatch.")
     elif("op" not in request_obj):
         return create_bad_request_response("Request is missing operation specifier.")
-    
+
+    # Parses, perform proper operation and returns a response message    
     op = request_obj['op']
     if op == 's':
         return handle_request_withdraw(request_obj, bank)
@@ -29,7 +53,7 @@ def handle_request(request, bank):
     elif op == 't':
         return handle_request_transfer(request_obj, bank)
     elif op == 'g':
-        return handle_request_get_owner_name(request_obj, bank)
+        return handle_request_get_account_info(request_obj, bank)
     elif op == 'r':
         return handle_request_remove_account(request_obj, bank)
     else:
@@ -129,10 +153,10 @@ def handle_request_get_balance(request_obj, bank):
     else:
         return create_bad_request_response()
 
-def handle_request_get_owner_name(request_obj, bank):
+def handle_request_get_account_info(request_obj, bank):
     if "account" in request_obj:
         account = request_obj["account"]
-        bank_response = bank.get_owner_name(account)
+        bank_response = bank.get_account_info(account)
         if(bank_response["status"] != ERROR_TYPE.NO_ERROR):
             return create_error_response(bank_response)
         else:
@@ -154,6 +178,8 @@ def handle_request_remove_account(request_obj, bank):
     else:
         return create_bad_request_response()
 
+# Creates an error response message.
+# For more information on the response message format, check protocol/responses.ts
 def create_error_response(bank_response):
     error_bank_response = bank_response["status"]
     if error_bank_response == ERROR_TYPE.NON_SUFFICIENT_FUNDS:

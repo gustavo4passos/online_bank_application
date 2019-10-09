@@ -1,31 +1,33 @@
+#####################################################
+#												   	#
+#	Universidade Federal da Bahia		   		   	#
+#	Fundamentos de Sistemas Distribuidos		   	#
+# 												   	#
+#	Gustavo Passos								   	#
+#	Daniel Lopes								   	#
+# 	Alisson Souza								   	#
+#												   	#
+#####################################################
+
+# This module provides an interface between the network 
+# application and the user. 
+# Operations are exposed to the used according to their level of access:
+# (0 = logged out, 1 = logged in, not a manager, 2 = logged in, manager)
+
 import socket
 import os
 import datetime
-from enum import Enum
-from bank_connection import Connection
+from bank_connection import BankConnection
+from helper          import get_error_message
+from helper          import is_amount_valid
 
+# User status
 is_logged_in = False
 account_number = "0"
 is_manager = False
 client_name = "invalid_name"
 
-def get_error_message(operation_status):
-    type = operation_status["type"]
-    if type == "wrong_password":
-        return "Senha incorreta."
-    if type == "invalid_account":
-        return "Conta inválida."
-    if type == "invalid_amount":
-        return "Quantia inválida"
-    if type == "non_sufficient_funds":
-        return "Saldo insuficiente"
-    if type == "invalid_token":
-        return "Token inválido."
-    # This should never be hit
-    if type == "bad_request":
-        return "Fatal: O formato da requisição é invalido"
-
-
+# The exposed operations, according to the level of access
 default_operations = [ 
     "Entrar na sua conta - l", 
     "Depósito - d", 
@@ -50,6 +52,7 @@ manager_operations = [
     "Desconectar - o",
     "Sair - q"]
 
+# Produces a greeting according to the time of day
 def get_greeting_message():
     hour = datetime.datetime.now().hour
     if hour >= 0 and hour <= 12:
@@ -59,6 +62,8 @@ def get_greeting_message():
     else:
         return "Boa noite"
 
+# Prints to the console the available operations according 
+# to the level of access
 def display_available_operations():
     if(not is_logged_in):
         for operation in default_operations:
@@ -70,20 +75,22 @@ def display_available_operations():
         for operation in manager_operations:
             print(operation)
 
+# Displays greeting to the console
 def display_greeting():
     print("{}{}{}".format(get_greeting_message(), ", " + client_name if is_logged_in  else "", "!"))
 
-def is_amount_valid(amount):
-    try:
-        float(amount)
-    except:
-        return False
-    if float(amount) < 0:
-        return False
-    return True
+# Display login status according to the level of access
+def display_login_status():
+    if is_logged_in:
+        if is_manager:
+            print("* GERENTE *")
+        print("Logado como {}.".format(client_name))
+    else:
+        print("Não logado.")
 
+# Entry point. Connects to the server and query the user for input.
 def run(): 
-    connection = Connection()
+    connection = BankConnection()
 
     global is_logged_in
     global account_number
@@ -94,7 +101,9 @@ def run():
     display_available_operations()
 
     while True: 
-        op = input('\nOperação (m para ver opções): ')
+        print('')
+        display_login_status()
+        op = input('Operação (m para ver opções): ')
         if op == 'q': 
             display_greeting()
             print("Até a próxima!")
