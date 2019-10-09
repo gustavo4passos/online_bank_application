@@ -9,7 +9,7 @@
 #												   	#
 #####################################################
 
-# The client module is the entry of the server application.
+# The server module is the entry of the server application.
 # It supports multiple concurrent clients, serving each one
 # in it's own thread and port.
 
