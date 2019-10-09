@@ -33,7 +33,7 @@ default_operations = [
     "Sair - q"]
 
 client_operations = [ 
-    "Saldo - s",
+    "Saldo - b",
     "Depósito - d", 
     "Transferência - t",
     "Mostrar operações - m",
@@ -41,7 +41,7 @@ client_operations = [
     "Sair - q"]
 
 manager_operations = [ 
-    "Saldo - s",
+    "Saldo - b",
     "Depósito - d", 
     "Transferência - t",
     "Criar conta - c",
@@ -73,7 +73,7 @@ def display_available_operations():
 def display_greeting():
     print("{}{}{}".format(get_greeting_message(), ", " + client_name if is_logged_in  else "", "!"))
 
-def is_valid_amount(amount):
+def is_amount_valid(amount):
     try:
         float(amount)
     except:
@@ -82,7 +82,7 @@ def is_valid_amount(amount):
         return False
     return True
 
-def main(): 
+def run(): 
     connection = Connection()
 
     global is_logged_in
@@ -131,7 +131,7 @@ def main():
                     print("Operação cancelada.")
                 else:
                     amount = input('Valor: ')
-                    if not is_valid_amount(amount):
+                    if not is_amount_valid(amount):
                         print("Valor inválido.")
                     else:
                         status = connection.request_deposit(account, float(amount))
@@ -146,7 +146,7 @@ def main():
             else:    
                 print("\nSaque.")
                 amount = input('Valor: ')
-                if not is_valid_amount(amount):
+                if not is_amount_valid(amount):
                     print("Valor inválido.")
                 else:   
                     status = connection.request_withdrawal(account_number, float(amount))
@@ -171,7 +171,7 @@ def main():
                     continue
 
                 amount = input('Valor: ')
-                if(not is_valid_amount(amount)):
+                if(not is_amount_valid(amount)):
                     print("Valor inválido.")
                 else:
                     status = connection.request_transfer(account, destination_account, float(amount))
@@ -244,4 +244,4 @@ def main():
         else:
             print("Operação inválida.")      
         
-main() 
+run()
