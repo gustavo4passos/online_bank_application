@@ -7,9 +7,7 @@ from bankConnection import Connection
 
 def Main():
     first_manager = False
-    first_login = False 
-    is_logged_in = False
-    is_manager = False      
+    first_login = False     
     #connect
     connection = Connection()
     if(connection.is_connected() == True):
@@ -34,9 +32,6 @@ def Main():
             account = input('Conta: ')
             password = input('Senha: ')
             connection.request_login(account, password)
-            is_logged_in = True
-            is_manager = True
-
             
         elif(op == 'd'):
             account = input('Conta: ')
