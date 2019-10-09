@@ -36,7 +36,7 @@ default_operations = [
 
 client_operations = [ 
     "Ver Saldo         - b",
-    "Saque             - s"
+    "Saque             - s",
     "Depósito          - d", 
     "Transferência     - t",
     "Mostrar operações - m",
@@ -45,7 +45,7 @@ client_operations = [
 
 manager_operations = [ 
     "Saldo             - b",
-    "Saque             - s"
+    "Saque             - s",
     "Depósito          - d", 
     "Transferência     - t",
     "Criar conta       - c",
