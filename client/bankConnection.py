@@ -48,6 +48,7 @@ class Connection:
             self.logged_in = True
             if(answer["is_manager"] == True):
                 self.is_a_manager = True
+                
         #self.socket.send('{ "op": "t", "account": "3584", "token": "trefssim", "destination_account": "3579", "amount": 16 }'.encode('ascii'))    
 
     def request_withdrawal(self, account, amount):
