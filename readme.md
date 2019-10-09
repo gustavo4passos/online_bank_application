@@ -1,5 +1,5 @@
 # Online Bank Application
-A simple online bank simulator using a client-server architecture written in Python.
+A simple online bank application using a client-server architecture written in Python. It supports simple operations such as withdrawal, deposit, transfer and checking account balances. Accounts with manager permissions can also create and remove accounts. The bank database is stored on disk on the server side, and is therefore persistent. It was created for learning purposes, and it's a simple example on client-server architecture.
 
 ## Usage
 The application needs Python 3 installed. To check if it is installed in your system run 'python3 --version' from the terminal.
