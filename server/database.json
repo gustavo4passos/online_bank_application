@@ -1,25 +1,32 @@
 {
     "private": {
-        "next_account_number": 3590
+        "next_account_number": 3592
     },
     "3579": {
         "id": "0123456",
         "password": "12345",
         "name": "Daniel",
-        "balance": 903.5,
+        "balance": 847.5,
         "is_manager": true
     },
     "3580": {
         "id": "987564",
         "password": "54321",
         "name": "Gustavo",
-        "balance": 3100,
+        "balance": 3135,
         "is_manager": false
     },
-    "3589": {
-        "id": "12345",
-        "name": "alissi1",
-        "password": "54321",
+    "3590": {
+        "id": "137",
+        "name": "Marciano do Bem",
+        "password": "4123",
+        "balance": 0,
+        "is_manager": false
+    },
+    "3591": {
+        "id": "1345",
+        "name": "Vem Tranquilo Boi",
+        "password": "boizinho",
         "balance": 0,
         "is_manager": true
     }

@@ -16,6 +16,7 @@ class Connection:
         self.logged_in = False 
         self.connection = True
         self.is_a_manager = False
+        
         try:
             s.connect((host,port)) 
             self.socket = s
@@ -39,16 +40,16 @@ class Connection:
         requisition['password'] = password
         json_req = json.dumps(requisition)
         self.socket.send(json_req.encode('ascii'))
-
         data = self.socket.recv(1024)
-        answer = json.loads(data)
-        print(answer["type"])
-        if(answer["type"] == "login_success"):
-            self.token = answer["token"]
+        response = json.loads(data)
+
+        if(response["type"] == "login_success"):
+            self.token = response["token"]
             self.logged_in = True
-            if(answer["is_manager"] == True):
+            if(response["is_manager"] == True):
                 self.is_a_manager = True
-        #self.socket.send('{ "op": "t", "account": "3584", "token": "trefssim", "destination_account": "3579", "amount": 16 }'.encode('ascii'))    
+        
+        return response
 
     def request_withdrawal(self, account, amount):
         requisition = {}
@@ -60,10 +61,8 @@ class Connection:
         self.socket.send(json_req.encode('ascii'))
 
         data = self.socket.recv(1024)
-        answer = json.loads(data)
-        print(answer["type"])
-
-        
+        response = json.loads(data)
+        return response
 
     def request_deposit(self, account, amount):
         requisition = {}
@@ -74,24 +73,22 @@ class Connection:
         self.socket.send(json_req.encode('ascii'))
 
         data = self.socket.recv(1024)
-        answer = json.loads(data)
-        print(answer["type"])
-        
+        response = json.loads(data)
+        return response
 
-    def request_transfer(self, account, destination_acount, amount):
+    def request_transfer(self, account, destination_account, amount):
         requisition = {}
         requisition['op'] = 't'
         requisition['account'] = account
-        requisition['destination_acount'] = destination_acount
+        requisition['destination_account'] = destination_account
         requisition['amount'] = int(amount)
         requisition['token'] = self.token
         json_req = json.dumps(requisition)
         self.socket.send(json_req.encode('ascii'))
 
         data = self.socket.recv(1024)
-        answer = json.loads(data)
-        print(answer["type"])
-        
+        response = json.loads(data)
+        return response
 
     def request_client_info(self, account):
         requisition = {}
@@ -101,11 +98,8 @@ class Connection:
         self.socket.send(json_req.encode('ascii'))
 
         data = self.socket.recv(1024)
-        answer = json.loads(data)
-        print(answer["type"] + ':')
-        if(answer["type"] == "account_info"):
-            print('Name: ' + answer["name"])
-            print('Account: ' + answer["account"])
+        response = json.loads(data)
+        return response
 
     def request_balance(self, account):
         requisition = {}
@@ -116,14 +110,9 @@ class Connection:
         self.socket.send(json_req.encode('ascii'))
 
         data = self.socket.recv(1024)
-        answer = json.loads(data)
-        if(answer["type"] == "balance"):
-            print(answer["balance"])
-        else:   
-            print('Error')
+        response = json.loads(data)
+        return response
         
-    
-
     def request_create_account(self, account, identification, name, password, is_manager):
         requisition = {}
         requisition['op'] = 'c'
@@ -137,14 +126,9 @@ class Connection:
         self.socket.send(json_req.encode('ascii'))
 
         data = self.socket.recv(1024)
-        answer = json.loads(data)
-        if(answer["type"] == "account_created"):
-            print(answer["type"] + ' ' + 'numero da conta: ' + answer["account"])
-        else:    
-            print(answer["type"])
+        response = json.loads(data)
+        return response
         
-        
-
     def request_remove_account(self, account_to_remove, account):
         requisition = {}
         requisition['op'] = 'r'
@@ -155,8 +139,8 @@ class Connection:
         self.socket.send(json_req.encode('ascii'))
 
         data = self.socket.recv(1024)
-        answer = json.loads(data)
-        print(answer)
+        response = json.loads(data)
+        return response
         
                   
 
