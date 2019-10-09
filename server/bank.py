@@ -12,7 +12,7 @@
 # This module represents the bank.
 # It's reponsible for storing information about the clients,
 # and exposing all available monetary and organizational operations.
-# All it's operations are thread-safe.
+# All its operations are thread-safe.
 
 import json
 import threading
