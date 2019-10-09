@@ -1,6 +1,6 @@
 {
     "private": {
-        "next_account_number": 3595
+        "next_account_number": 3596
     },
     "3579": {
         "id": "0123456",
@@ -21,6 +21,13 @@
         "name": "Donald Knuth",
         "password": "123quatro5",
         "balance": 5000000.0,
+        "is_manager": false
+    },
+    "3595": {
+        "id": "951465",
+        "name": "Alan Turing",
+        "password": "a234b",
+        "balance": 359781256.0,
         "is_manager": false
     }
 }
