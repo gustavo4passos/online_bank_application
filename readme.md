@@ -1,4 +1,4 @@
-# Simple Online Bank Simulator
+# Online Bank Application
 A simple online bank simulator using a client-server architecture written in Python.
 
 ## Usage
