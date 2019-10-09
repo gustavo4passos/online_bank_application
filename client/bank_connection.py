@@ -1,13 +1,29 @@
+#####################################################
+#												   	#
+#	Universidade Federal da Bahia		   		   	#
+#	Fundamentos de Sistemas Distribuidos		   	#
+# 												   	#
+#	Gustavo Passos								   	#
+#	Daniel Lopes								   	#
+# 	Alisson Souza								   	#
+#												   	#
+#####################################################
+
+# This module exposes the functionaliaty provided by the bank server
+# to the client through the network.
+# It's responsible for connecting to the server, sending requests
+# over the netork and delivering the response.
+
 import socket
 import json
 from enum import Enum
 
-class Connection:
+class BankConnection:
 
     def __init__(self):
         host = '127.0.0.1'
     
-        # Define the connection port
+        # Port the server is listening at
         port = 7049
     
         s = socket.socket(socket.AF_INET,socket.SOCK_STREAM) 
@@ -24,21 +40,15 @@ class Connection:
         except socket.timeout:
             self.connection = False  
 
-    def is_connected(self):
-        return self.connection
-
-    def is_logged_in(self):
-        return self.logged_in
-
     def is_manager(self):
         return self.is_a_manager        
 
     def request_login(self, account, password):
-        requisition = {}
-        requisition['op'] = 'l'
-        requisition['account'] = account
-        requisition['password'] = password
-        json_req = json.dumps(requisition)
+        request = {}
+        request['op'] = 'l'
+        request['account'] = account
+        request['password'] = password
+        json_req = json.dumps(request)
         self.socket.send(json_req.encode('ascii'))
         data = self.socket.recv(1024)
         response = json.loads(data)
@@ -52,12 +62,12 @@ class Connection:
         return response
 
     def request_withdrawal(self, account, amount):
-        requisition = {}
-        requisition['op'] = 's'
-        requisition['account'] = account
-        requisition['amount'] = amount
-        requisition['token'] = self.token
-        json_req = json.dumps(requisition)
+        request = {}
+        request['op'] = 's'
+        request['account'] = account
+        request['amount'] = amount
+        request['token'] = self.token
+        json_req = json.dumps(request)
         self.socket.send(json_req.encode('ascii'))
 
         data = self.socket.recv(1024)
@@ -65,11 +75,11 @@ class Connection:
         return response
 
     def request_deposit(self, account, amount):
-        requisition = {}
-        requisition['op'] = 'd'
-        requisition['account'] = account
-        requisition['amount'] = amount
-        json_req = json.dumps(requisition)
+        request = {}
+        request['op'] = 'd'
+        request['account'] = account
+        request['amount'] = amount
+        json_req = json.dumps(request)
         self.socket.send(json_req.encode('ascii'))
 
         data = self.socket.recv(1024)
@@ -77,13 +87,13 @@ class Connection:
         return response
 
     def request_transfer(self, account, destination_account, amount):
-        requisition = {}
-        requisition['op'] = 't'
-        requisition['account'] = account
-        requisition['destination_account'] = destination_account
-        requisition['amount'] = amount
-        requisition['token'] = self.token
-        json_req = json.dumps(requisition)
+        request = {}
+        request['op'] = 't'
+        request['account'] = account
+        request['destination_account'] = destination_account
+        request['amount'] = amount
+        request['token'] = self.token
+        json_req = json.dumps(request)
         self.socket.send(json_req.encode('ascii'))
 
         data = self.socket.recv(1024)
@@ -91,10 +101,10 @@ class Connection:
         return response
 
     def request_client_info(self, account):
-        requisition = {}
-        requisition['op'] = 'g'
-        requisition['account'] = account
-        json_req = json.dumps(requisition)
+        request = {}
+        request['op'] = 'g'
+        request['account'] = account
+        json_req = json.dumps(request)
         self.socket.send(json_req.encode('ascii'))
 
         data = self.socket.recv(1024)
@@ -102,11 +112,11 @@ class Connection:
         return response
 
     def request_balance(self, account):
-        requisition = {}
-        requisition['op'] = 'b'
-        requisition['account'] = account
-        requisition['token'] = self.token
-        json_req = json.dumps(requisition)
+        request = {}
+        request['op'] = 'b'
+        request['account'] = account
+        request['token'] = self.token
+        json_req = json.dumps(request)
         self.socket.send(json_req.encode('ascii'))
 
         data = self.socket.recv(1024)
@@ -114,15 +124,15 @@ class Connection:
         return response
         
     def request_create_account(self, account, identification, name, password, is_manager):
-        requisition = {}
-        requisition['op'] = 'c'
-        requisition['account'] = account
-        requisition['id'] = identification
-        requisition['name'] = name
-        requisition['password'] = password
-        requisition['is_manager'] = is_manager
-        requisition['token'] = self.token
-        json_req = json.dumps(requisition)
+        request = {}
+        request['op'] = 'c'
+        request['account'] = account
+        request['id'] = identification
+        request['name'] = name
+        request['password'] = password
+        request['is_manager'] = is_manager
+        request['token'] = self.token
+        json_req = json.dumps(request)
         self.socket.send(json_req.encode('ascii'))
 
         data = self.socket.recv(1024)
@@ -130,21 +140,14 @@ class Connection:
         return response
         
     def request_remove_account(self, account_to_remove, account):
-        requisition = {}
-        requisition['op'] = 'r'
-        requisition['account_to_remove'] = account_to_remove
-        requisition['account'] = account
-        requisition['token'] = self.token
-        json_req = json.dumps(requisition)
+        request = {}
+        request['op'] = 'r'
+        request['account_to_remove'] = account_to_remove
+        request['account'] = account
+        request['token'] = self.token
+        json_req = json.dumps(request)
         self.socket.send(json_req.encode('ascii'))
 
         data = self.socket.recv(1024)
         response = json.loads(data)
         return response
-        
-                  
-
-
-    
-        
-        

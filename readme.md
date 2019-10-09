@@ -1,134 +1,15 @@
 # Simple Online Bank Simulator
 A simple online bank simulator using a client-server architecture written in Python.
 
-# PROTOCOL
+## Usage
+To run the application you need Python 3 installed. To check if it is installed in your computer run python3 --version from the terminal.
+To install Python 3 on Ubuntu (or other Linux distributions that apt is available), run sudo apt install python3
 
-### REQUESTS
+### Running the server
+The server is located inside the 'server' folder. To start it, run 'python3 server.py`. The default port is 7049. It needs to be running before trying to connect from a client.
 
-```typescript
-interface withdraw {
-    op: string; // s
-    account: string;
-    amount: number;
-    token: string;
-};
+### Running the client
+The CLI client is located inside the client folder. It can be started by running 'python3 client_cli.py'
 
-interface transfer {
-    op: string; // t
-    account: string;
-    destination_account: string;
-    amount: number;
-    token: string;
-};
-
-interface deposit {
-    op: string; // d
-    account: string;
-    amount: number;
-};
-
-interface balance {
-    op: string; // b
-    account: string;
-    token: string;
-};
-
-interface create_account {
-    op: string; // c
-    account: string; 
-    id: string;
-    token: string;
-    name: string;
-    password: string;
-    is_manager: boolean;
-};
-
-interface remove_account {
-    op: string; // r
-    account_to_remove: string;
-    account: string; 
-}
-
-interface get_client_info {
-    op: string; // g
-    account: string;
-}
-```
-
-### RESPONSES
-
-```typescript
-interface bad_request {
-    type: string; // "bad_request";
-};
-
-interface ok {
-    type: string; // "ok"
-    message?: string;
-};
-
-interface login_success {
-    type: string; // "login_success"
-    name: string; // client name
-    balance: number;
-    token: string;
-};
-
-interface login_fail {
-    type: string; // login_fail
-    error_message?: string;
-}
-
-interface balance {
-    type: string; // "balance"
-    balance: number;   
-};
-
-interface bad_request {
-    type: string; // "bad_request"
-    error_message?: string; // Necessario?
-}
-
-interface invalid_id {
-    type: string; // "invalid_id"
-    error_message?: string;
-}
-
-interface invalid_account {
-    type:string; // invalid_account
-    account: string;
-    error_message?: string;
-}
-
-interface invalid_name {
-    type: string; // "invalid_name"
-    name: string; 
-    error_message?: string;
-}
-
-interface invalid_amount {
-    type: string; // "invalid_amount"
-    error_message?: string; // valor negativo? não é numero?
-}
-
-interface non_sufficient_funds {
-    type: string // "non_sufficient_funds"
-    error_message?: string;
-}
-
-interface not_a_manager {
-    type: string; // "not_a_manager"
-    error_messsage?: string;
-}
-
-interface account_info {
-    type: string; // "account_info"
-    name: string; 
-    account: number;
-}
-
-interface invalid_token {
-    type: string; // "invalid_token"
-    error_message?: string;
-}
-```
+### Protocol
+A description of the request and response messages are located inside the protocol folder
