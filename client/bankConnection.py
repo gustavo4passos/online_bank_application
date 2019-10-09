@@ -15,6 +15,7 @@ class Connection:
         # connect to server
         self.logged_in = False 
         self.connection = True
+        self.is_a_manager = False
         try:
             s.connect((host,port)) 
             self.socket = s
@@ -26,7 +27,10 @@ class Connection:
         return self.connection
 
     def is_logged_in(self):
-        return self.logged_in    
+        return self.logged_in
+
+    def is_manager(self):
+        return self.is_a_manager        
 
     def request_login(self, account, password):
         requisition = {}
@@ -42,6 +46,8 @@ class Connection:
         if(answer["type"] == "login_success"):
             self.token = answer["token"]
             self.logged_in = True
+            if(answer["is_manager"] == True):
+                self.is_a_manager = True
         #self.socket.send('{ "op": "t", "account": "3584", "token": "trefssim", "destination_account": "3579", "amount": 16 }'.encode('ascii'))    
 
     def request_withdrawal(self, account, amount):
