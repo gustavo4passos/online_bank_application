@@ -16,7 +16,7 @@ class Connection:
         self.logged_in = False 
         self.connection = True
         self.is_a_manager = False
-        
+
         try:
             s.connect((host,port)) 
             self.socket = s
@@ -55,7 +55,7 @@ class Connection:
         requisition = {}
         requisition['op'] = 's'
         requisition['account'] = account
-        requisition['amount'] = int(amount)
+        requisition['amount'] = amount
         requisition['token'] = self.token
         json_req = json.dumps(requisition)
         self.socket.send(json_req.encode('ascii'))
@@ -68,7 +68,7 @@ class Connection:
         requisition = {}
         requisition['op'] = 'd'
         requisition['account'] = account
-        requisition['amount'] = int(amount)
+        requisition['amount'] = amount
         json_req = json.dumps(requisition)
         self.socket.send(json_req.encode('ascii'))
 
@@ -81,7 +81,7 @@ class Connection:
         requisition['op'] = 't'
         requisition['account'] = account
         requisition['destination_account'] = destination_account
-        requisition['amount'] = int(amount)
+        requisition['amount'] = amount
         requisition['token'] = self.token
         json_req = json.dumps(requisition)
         self.socket.send(json_req.encode('ascii'))
