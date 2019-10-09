@@ -27,6 +27,9 @@ DATABASE_FILE_NAME = "database.json"
 # The bank module is started before the server starts running
 bank = Bank(DATABASE_FILE_NAME)
 
+# Current n of clientes connected
+n_clients_connected = 0
+
 # A client thread is created for each new client, which runs this
 # function in a loop until the client disconnects or the connection 
 # is lost.
@@ -41,9 +44,15 @@ def client_thread(connection, client_address):
 		connection.send(response.encode('ascii'))
 
 	Logger.log_info("Client on " + str(client_address) + " disconnected.")
+
+	global n_clients_connected
+	n_clients_connected -= 1
+	Logger.log_info("Number of clients currently connected: {}.".format(n_clients_connected))
+	
 	connection.close()
 
 def start_server():
+	global n_clients_connected
 	host = ""
 	# The public default port for the server.
 	port = 7049
@@ -59,6 +68,8 @@ def start_server():
 		# thread and keep listening
 		client_socket, client_address = listening_socket.accept()
 		Logger.log_info("New client accepted on: " + str(client_address))
+		n_clients_connected += 1
+		Logger.log_info("Number of clients currently connected: {}.".format(n_clients_connected))
 		start_new_thread(client_thread, (client_socket, client_address))
 
 	listening_socket.close()

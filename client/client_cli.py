@@ -30,27 +30,29 @@ client_name = "invalid_name"
 # The exposed operations, according to the level of access
 default_operations = [ 
     "Entrar na sua conta - l", 
-    "Depósito - d", 
-    "Mostrar operações - m",
-    "Sair - q"]
+    "Depósito            - d", 
+    "Mostrar operações   - m",
+    "Sair                - q"]
 
 client_operations = [ 
-    "Saldo - b",
-    "Depósito - d", 
-    "Transferência - t",
+    "Ver Saldo         - b",
+    "Saque             - s"
+    "Depósito          - d", 
+    "Transferência     - t",
     "Mostrar operações - m",
-    "Desconectar - o",
-    "Sair - q"]
+    "Desconectar       - o",
+    "Sair              - q"]
 
 manager_operations = [ 
-    "Saldo - b",
-    "Depósito - d", 
-    "Transferência - t",
-    "Criar conta - c",
-    "Remover conta - r",
+    "Saldo             - b",
+    "Saque             - s"
+    "Depósito          - d", 
+    "Transferência     - t",
+    "Criar conta       - c",
+    "Remover conta     - r",
     "Mostrar operações - m",
-    "Desconectar - o",
-    "Sair - q"]
+    "Desconectar       - o",
+    "Sair              - q"]
 
 # Produces a greeting according to the time of day
 def get_greeting_message():
