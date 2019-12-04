@@ -16,10 +16,13 @@
 
 import socket
 import json
-from enum import Enum
+import threading
 
-class BankConnection:
+from enum    import Enum
+from _thread import start_new_thread
 
+
+class BankConnection:    
     def __init__(self):
         host = '127.0.0.1'
     
@@ -33,15 +36,75 @@ class BankConnection:
         self.connection = True
         self.is_a_manager = False
 
+        self.is_saving_state = False
+        self.responses = []
+        self.pending_requests = []
+        self.responses_queue = []
+
         try:
             s.connect((host,port)) 
             self.socket = s
+            self.socket.setblocking(0)
+            #start_new_thread(self.handle_connection, self)
+            t1 = threading.Thread(target = self.handle_connection)
+            t1.start()
 
         except socket.timeout:
-            self.connection = False  
+            self.connection = False
+
+    def save_state(self, token):
+        state = vars(self)
+        print(f'Snapshot token: {token}')
+        print('Channel 0: Empty \n')
+        print('\n'.join(f'{key}: {value}' for key, value in state.items()))
+        print('\n')
+
+    def handle_request(self, request):
+        self.pending_requests.append(request.encode('ascii'))
+
+        while(self.has_response() != True):
+            pass
+
+        response = self.responses[0]
+        self.responses.remove(response)
+
+        return response             
+            
+
+    def handle_connection(self):
+        while(self.connection):
+            if(len(self.pending_requests) != 0):
+                self.socket.send(self.pending_requests[0])
+                self.pending_requests.pop(0)
+
+            try:
+                data = self.socket.recv(1024)
+            except:
+                data = None
+
+            if data:    
+                response = json.loads(data)
+                if(response["type"] == "save_state"):
+                    self.save_state(response["token"])
+                    self.socket.send(response.encode('ascii'))
+                    
+                else:
+                    self.responses.append(response)     
+
+                if(self.is_saving_state == True):
+                    self.responses_queue.append(response)
+                  
+
+    def close_connection(self):
+        self.connection = False                 
 
     def is_manager(self):
-        return self.is_a_manager        
+        return self.is_a_manager   
+
+    def has_response(self):
+        if(len(self.responses) != 0):
+            return True
+        return False        
 
     def request_login(self, account, password):
         request = {}
@@ -49,9 +112,8 @@ class BankConnection:
         request['account'] = account
         request['password'] = password
         json_req = json.dumps(request)
-        self.socket.send(json_req.encode('ascii'))
-        data = self.socket.recv(1024)
-        response = json.loads(data)
+
+        response = self.handle_request(json_req)
 
         if(response["type"] == "login_success"):
             self.token = response["token"]
@@ -68,11 +130,10 @@ class BankConnection:
         request['amount'] = amount
         request['token'] = self.token
         json_req = json.dumps(request)
-        self.socket.send(json_req.encode('ascii'))
 
-        data = self.socket.recv(1024)
-        response = json.loads(data)
-        return response
+        return self.handle_request(json_req)
+
+    
 
     def request_deposit(self, account, amount):
         request = {}
@@ -80,11 +141,8 @@ class BankConnection:
         request['account'] = account
         request['amount'] = amount
         json_req = json.dumps(request)
-        self.socket.send(json_req.encode('ascii'))
 
-        data = self.socket.recv(1024)
-        response = json.loads(data)
-        return response
+        return self.handle_request(json_req)
 
     def request_transfer(self, account, destination_account, amount):
         request = {}
@@ -94,22 +152,16 @@ class BankConnection:
         request['amount'] = amount
         request['token'] = self.token
         json_req = json.dumps(request)
-        self.socket.send(json_req.encode('ascii'))
-
-        data = self.socket.recv(1024)
-        response = json.loads(data)
-        return response
+        
+        return self.handle_request(json_req)
 
     def request_client_info(self, account):
         request = {}
         request['op'] = 'g'
         request['account'] = account
         json_req = json.dumps(request)
-        self.socket.send(json_req.encode('ascii'))
 
-        data = self.socket.recv(1024)
-        response = json.loads(data)
-        return response
+        return self.handle_request(json_req)
 
     def request_balance(self, account):
         request = {}
@@ -117,11 +169,9 @@ class BankConnection:
         request['account'] = account
         request['token'] = self.token
         json_req = json.dumps(request)
-        self.socket.send(json_req.encode('ascii'))
 
-        data = self.socket.recv(1024)
-        response = json.loads(data)
-        return response
+        return self.handle_request(json_req)
+      
         
     def request_create_account(self, account, identification, name, password, is_manager):
         request = {}
@@ -133,11 +183,8 @@ class BankConnection:
         request['is_manager'] = is_manager
         request['token'] = self.token
         json_req = json.dumps(request)
-        self.socket.send(json_req.encode('ascii'))
 
-        data = self.socket.recv(1024)
-        response = json.loads(data)
-        return response
+        return self.handle_request(json_req)
         
     def request_remove_account(self, account_to_remove, account):
         request = {}
@@ -146,8 +193,11 @@ class BankConnection:
         request['account'] = account
         request['token'] = self.token
         json_req = json.dumps(request)
-        self.socket.send(json_req.encode('ascii'))
 
-        data = self.socket.recv(1024)
-        response = json.loads(data)
-        return response
+        return self.handle_request(json_req)
+
+    def request_snapshot(self):
+        request = {}
+        request['op'] = 'start_snapshot'
+        json_req = json.dumps(request)
+        self.socket.send(json_req.encode('ascii'))
