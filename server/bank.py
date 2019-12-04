@@ -312,3 +312,12 @@ class Bank:
 
 		self.database_access_lock.release()
 		return True
+
+	def save_state(self):
+		return
+
+	def dump_database(self):
+		self.database_access_lock.acquire()
+		dump = json.dumps(self.database)
+		self.database_access_lock.release()
+		return dump

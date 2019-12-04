@@ -30,6 +30,10 @@ def handle_request(request, bank):
     except:
         return create_bad_request_response("Request is not valid json")
 
+    # Check if it is a marker first
+    if 'type' in request_obj and request_obj['type'] == 'save_state':
+        return json.dumps({ 'type': 'save_state', 'token': request_obj['token'] })
+
     # Checks if the types are correct
     # Because python is not typed, this needs to be done before perfoming
     # the operations through the bank module.
@@ -56,6 +60,8 @@ def handle_request(request, bank):
         return handle_request_get_account_info(request_obj, bank)
     elif op == 'r':
         return handle_request_remove_account(request_obj, bank)
+    elif op == 'start_snapshot':
+        return json.dumps({ 'type': 'start_snapshot' })
     else:
         return create_bad_request_response("Unknown operation")
 

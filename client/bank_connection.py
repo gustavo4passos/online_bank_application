@@ -21,13 +21,12 @@ import threading
 from enum    import Enum
 from _thread import start_new_thread
 
-
 class BankConnection:    
     def __init__(self):
         host = '127.0.0.1'
     
         # Port the server is listening at
-        port = 7049
+        port = 7069
     
         s = socket.socket(socket.AF_INET,socket.SOCK_STREAM) 
     
@@ -41,6 +40,9 @@ class BankConnection:
         self.pending_requests = []
         self.responses_queue = []
 
+        self.all_events_lock = threading.Lock()
+        self.all_events = []
+
         try:
             s.connect((host,port)) 
             self.socket = s
@@ -53,6 +55,7 @@ class BankConnection:
             self.connection = False
 
     def save_state(self, token):
+        print('[SNAPSHOT][STATE]')
         state = vars(self)
         print(f'Snapshot token: {token}')
         print('Channel 0: Empty \n')
@@ -60,6 +63,10 @@ class BankConnection:
         print('\n')
 
     def handle_request(self, request):
+        self.all_events_lock.acquire()
+        self.all_events.append({ 'request': request})
+        self.all_events_lock.release()
+
         self.pending_requests.append(request.encode('ascii'))
 
         while(self.has_response() != True):
@@ -77,23 +84,46 @@ class BankConnection:
                 self.socket.send(self.pending_requests[0])
                 self.pending_requests.pop(0)
 
+            NO_DATA = -1
             try:
                 data = self.socket.recv(1024)
             except:
-                data = None
+                data = NO_DATA
 
-            if data:    
-                response = json.loads(data)
-                if(response["type"] == "save_state"):
-                    self.save_state(response["token"])
-                    self.socket.send(response.encode('ascii'))
+            if data:
+                if data != NO_DATA:   
+                    self.all_events_lock.acquire()
+                    self.all_events.append({ 'response': data })
+                    self.all_events_lock.release()
+
+                    response = json.loads(data)
+                    if(response["type"] == "save_state"):
+                        # Finish snapshot
+                        if(self.is_saving_state):
+                            print('[SNAPSHOT][CHANNEL]')
+                            print(self.responses_queue)
+                            self.responses_queue.clear()
+                            print('#########################################################')
+                            self.is_saving_state = False
+                        else:
+                            # Start saving state
+                            print(f'\n################### SNAPSHOT {response["token"]} ###################')
+                            self.all_events_lock.acquire()
+                            print(f'[SNAPSHOT][EVENTS]')
+                            print(self.all_events)
+                            self.all_events.clear()
+                            self.all_events_lock.release()
+                            self.socket.send(json.dumps(response).encode('ascii'))
+                            self.save_state(response["token"])
+                            self.is_saving_state = True
+                    else:
+                        self.responses.append(response)     
+
+                    if(self.is_saving_state == True):
+                        self.responses_queue.append(response)
+            else:
+                break
                     
-                else:
-                    self.responses.append(response)     
-
-                if(self.is_saving_state == True):
-                    self.responses_queue.append(response)
-                  
 
     def close_connection(self):
         self.connection = False                 
