@@ -109,6 +109,7 @@ def run():
         if op == 'q': 
             display_greeting()
             print("Até a próxima!")
+            connection.close_connection()
             break
         
         if(op == 'l'):
@@ -251,6 +252,9 @@ def run():
         elif(op == 'm'):
             print('')      
             display_available_operations()
+
+        elif(op == 'snapshot'):
+            connection.request_snapshot()   
 
         else:
             print("Operação inválida.")      
